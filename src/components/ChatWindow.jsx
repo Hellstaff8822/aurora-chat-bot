@@ -1,7 +1,17 @@
+import { useSelector } from 'react-redux';
+import MessageItem from './MessageItem';
 function ChatWindow() {
+  const messages = useSelector((state) => state.messages.messages);
+
   return (
-    <div className='flex items-center  justify-center flex-1 overflow-y-auto bg-[#0F172A] p-4'>
-      <p className='text-center opacity-50'>No messages yet...</p>
+    <div className='flex flex-col flex-1 overflow-y-auto bg-[#0F172A]'>
+      <div className='flex-1 flex justify-center items-center'>
+        <div className='w-full max-w-3xl mx-auto px-4'>
+          {messages.map((msg) => (
+            <MessageItem key={msg.id} text={msg.text} role={msg.role} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
