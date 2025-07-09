@@ -11,7 +11,6 @@ function App() {
         <div className='flex-1 flex flex-col relative'>
           <ChatWindow />
           <InputField />
-          {console.log(import.meta.env.VITE_GEMINI_API_KEY)}
         </div>
       </div>
     </>

@@ -7,7 +7,6 @@ function ChatWindow() {
   const messages = useSelector((state) => state.messages.messages);
   const endRef = useRef(null);
   const isBotTyping = useSelector((state) => state.messages.isBotTyping);
-  console.log('Стан isBotTyping:', isBotTyping);
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

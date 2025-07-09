@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { SendHorizontal } from 'lucide-react';
-import {sendMessage } from '../features/chat/messagesSlice';
+import { sendMessage } from '../features/chat/messagesSlice';
 
 function InputField() {
   const dispatch = useDispatch();
@@ -10,9 +10,7 @@ function InputField() {
     const input = e.target.elements[0];
     const text = input.value;
     if (!text.trim()) return;
-   dispatch(sendMessage(text));
-
-    
+    dispatch(sendMessage(text));
 
     input.value = '';
   };
