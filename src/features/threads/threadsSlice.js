@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 const initialState = {
   threads: [],
   activeThreadId: null,
+  draftThreadId: nanoid(),
 };
 
 const threadsSlice = createSlice({
@@ -36,14 +37,32 @@ const threadsSlice = createSlice({
     },
 
     renameThread: (state, action) => {
-        const { id, title } = action.payload;
-        const thread = state.threads.find(t => t.id === id);
-        if (thread) {
-          thread.title = title;
-        }
-      },
+      const { id, title } = action.payload;
+      const thread = state.threads.find((t) => t.id === id);
+      if (thread) {
+        thread.title = title;
+      }
+    },
+
+    createThreadFromDraft: (state, action) => {
+      const { id, title } = action.payload;
+      const newThread = {
+        id,
+        title: title || 'New Chat',
+        createdAt: Date.now(),
+      };
+      state.threads.push(newThread);
+      state.activeThreadId = id;
+      state.draftThreadId = null;
+    },
   },
 });
 
-export const { addThread, setActiveThread, setTyping, renameThread } = threadsSlice.actions;
+export const {
+  addThread,
+  setActiveThread,
+  setTyping,
+  renameThread,
+  createThreadFromDraft,
+} = threadsSlice.actions;
 export default threadsSlice.reducer;

@@ -4,11 +4,18 @@ import { useSelector } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
 
 function ChatWindow() {
-  const messages = useSelector(state =>
-    state.messages.messagesByThread[state.threads.activeThreadId] || []
+  const { activeThreadId, draftThreadId } = useSelector(
+    (state) => state.threads
   );
+  const activeId = activeThreadId ?? draftThreadId;
+
+  const messages = useSelector(
+    (state) => state.messages.messagesByThread[activeId] || []
+  );
+
   const endRef = useRef(null);
   const isBotTyping = useSelector((state) => state.messages.isBotTyping);
+
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

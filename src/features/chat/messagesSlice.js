@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 import { geminiRequest } from '../../lib/geminiRequest';
-import { setTyping } from '../threads/threadsSlice';
+import { setTyping, createThreadFromDraft } from '../threads/threadsSlice';
 
 const initialState = {
   messagesByThread: {
@@ -27,7 +27,9 @@ export const sendMessage = createAsyncThunk(
       const response = await geminiRequest(geminiMsgs, 'gemini-2.0-flash');
       dispatch(addMessage({ text: response, role: 'bot', threadId }));
     } catch (err) {
-      dispatch(addMessage({ text: '⚠️ ' + err.message, role: 'bot', threadId }));
+      dispatch(
+        addMessage({ text: '⚠️ ' + err.message, role: 'bot', threadId })
+      );
       return rejectWithValue(err.message);
     } finally {
       dispatch(setTyping(false));
@@ -38,14 +40,16 @@ export const sendMessage = createAsyncThunk(
 export const sendMessageToActiveThread = (text) => (dispatch, getState) => {
   const state = getState();
   const activeThreadId = state.threads.activeThreadId;
+  const draftThreadId = state.threads.draftThreadId;
 
-  if (!activeThreadId) return;
+  if (activeThreadId) {
+    dispatch(sendMessage({ userText: text, threadId: activeThreadId }));
+  } else if (draftThreadId) {
+    const title = text || 'New Chat';
 
-  dispatch(addMessage({
-    text,
-    role: 'user',
-    threadId: activeThreadId
-  }));
+    dispatch(createThreadFromDraft({ id: draftThreadId, title }));
+    dispatch(sendMessage({ userText: text, threadId: draftThreadId }));
+  }
 };
 
 const messagesSlice = createSlice({
