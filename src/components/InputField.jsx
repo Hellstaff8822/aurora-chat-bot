@@ -1,17 +1,17 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SendHorizontal } from 'lucide-react';
-import { sendMessage } from '../features/chat/messagesSlice';
+import {sendMessage } from '../features/chat/messagesSlice';
 
 function InputField() {
   const dispatch = useDispatch();
-
+  const activeThreadId = useSelector((state) => state.threads.activeThreadId);
   const handleSubmit = (e) => {
     e.preventDefault();
     const input = e.target.elements[0];
-    const text = input.value;
-    if (!text.trim()) return;
-    dispatch(sendMessage(text));
-
+    const text = input.value.trim();
+    if (!text || !activeThreadId) return;
+  
+    dispatch(sendMessage({ userText: text, threadId: activeThreadId }));
     input.value = '';
   };
   return (

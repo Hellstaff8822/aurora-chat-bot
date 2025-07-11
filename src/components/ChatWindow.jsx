@@ -4,7 +4,9 @@ import { useSelector } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
 
 function ChatWindow() {
-  const messages = useSelector((state) => state.messages.messages);
+  const messages = useSelector(state =>
+    state.messages.messagesByThread[state.threads.activeThreadId] || []
+  );
   const endRef = useRef(null);
   const isBotTyping = useSelector((state) => state.messages.isBotTyping);
   useEffect(() => {
