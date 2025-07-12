@@ -16,7 +16,7 @@ const threadsSlice = createSlice({
         const newId = action.payload;
         state.threads.push({
           id: newId,
-          title: `Chat ${state.threads.length + 1}`,
+          title: 'New Chat',
           messages: [],
           createdAt: Date.now(),
         });
