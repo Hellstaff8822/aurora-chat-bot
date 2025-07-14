@@ -44,6 +44,14 @@ const threadsSlice = createSlice({
       }
     },
 
+    deleteThread: (state, action) => {
+      const idToDelete = action.payload;
+      state.threads = state.threads.filter((t) => t.id !== idToDelete);
+      if (state.activeThreadId === idToDelete) {
+        state.activeThreadId = null;
+      }
+    },
+
     createThreadFromDraft: (state, action) => {
       const { id, title } = action.payload;
       const newThread = {
@@ -63,6 +71,7 @@ export const {
   setActiveThread,
   setTyping,
   renameThread,
+  deleteThread,
   createThreadFromDraft,
 } = threadsSlice.actions;
 export default threadsSlice.reducer;

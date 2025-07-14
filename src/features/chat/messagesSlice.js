@@ -5,6 +5,7 @@ import {
   setTyping,
   createThreadFromDraft,
   renameThread,
+  deleteThread
 } from '../threads/threadsSlice';
 import { generateTitle } from '../../lib/geminiTitle';
 
@@ -90,6 +91,12 @@ const messagesSlice = createSlice({
       })
       .addCase(sendMessage.rejected, (state) => {
         state.isBotTyping = false;
+      })
+     .addCase(deleteThread, (state, action) => {
+        const threadIdToDelete = action.payload;
+        if (state.messagesByThread[threadIdToDelete]) {
+          delete state.messagesByThread[threadIdToDelete];
+        }
       });
   },
 });
