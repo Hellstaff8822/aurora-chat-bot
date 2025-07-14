@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import chatReducer from '@/features/slices/chatSlice';
 import threadsReducer from '@/features/slices/threadsSlice';
 
+
 const loadState = () => {
   try {
     const serializedState = localStorage.getItem('chatState');
@@ -10,7 +11,7 @@ const loadState = () => {
     }
     return JSON.parse(serializedState);
   } catch (err) {
-    console.error('Не вдалося завантажити стан', err);
+    console.error("Could not load state", err);
     return undefined;
   }
 };
@@ -19,12 +20,12 @@ const saveState = (state) => {
   try {
     const stateToSave = {
       threads: state.threads,
-      messages: state.messages,
+      chat: state.chat,
     };
     const serializedState = JSON.stringify(stateToSave);
     localStorage.setItem('chatState', serializedState);
   } catch (err) {
-    console.error('Не вдалося зберегти стан', err);
+    console.error("Could not save state", err);
   }
 };
 
@@ -37,6 +38,7 @@ const store = configureStore({
   },
   preloadedState: persistedState,
 });
+
 
 store.subscribe(() => {
   saveState(store.getState());

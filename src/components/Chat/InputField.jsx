@@ -4,10 +4,11 @@ import { SendHorizontal } from 'lucide-react';
 import { sendMessage } from '@features/chatSlice';
 import { addThread } from '@features/threadsSlice';
 import { useRef } from 'react';
+import { useActiveThread } from '@hooks/useActiveThread';
 
 function InputField() {
   const dispatch = useDispatch();
-  const activeThreadId = useSelector((state) => state.threads.activeThreadId);
+ const activeThreadId = useActiveThread();
   const isBotTyping = useSelector((state) => state.chat.isBotTyping);
   const textareaRef = useRef(null);
 

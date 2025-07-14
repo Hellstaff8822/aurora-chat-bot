@@ -2,18 +2,13 @@ import { useRef, useEffect } from 'react';
 import MessageItem from '@components/chat/MessageItem';
 import { useSelector } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
-
-const EMPTY_ARRAY = [];
+import { useChatMessages } from '@/hooks/useChatMessages';
 
 function ChatWindow() {
-  const activeThreadId = useSelector((state) => state.threads.activeThreadId);
-
-  const messages = useSelector(
-    (state) => state.chat.messagesByThread[activeThreadId] || EMPTY_ARRAY,
-  );
+  const messages = useChatMessages();
+  const isBotTyping = useSelector((state) => state.chat.isBotTyping);
 
   const endRef = useRef(null);
-  const isBotTyping = useSelector((state) => state.chat.isBotTyping);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });

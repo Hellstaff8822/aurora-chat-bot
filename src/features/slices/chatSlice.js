@@ -12,27 +12,34 @@ const initialState = {
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async ({ userText, threadId }, { dispatch, getState, rejectWithValue }) => {
-    const threads = getState().threads.threads;
-    const currentThread = threads.find((t) => t.id === threadId);
-    const shouldRename = currentThread?.title === 'Новий чат';
+    const state = getState();
+    const thread = state.threads.threads.find((t) => t.id === threadId);
+    const messages = state.chat.messagesByThread[threadId] || [];
+
+    if (thread?.title === 'Новий чат' && messages.length === 0) {
+      generateTitle(userText)
+        .then((title) => {
+          dispatch(renameThread({ id: threadId, title }));
+        })
+        .catch((err) => {
+          console.error('Помилка фонового перейменування чату:', err);
+        });
+    }
+
+
     dispatch(setTyping(true));
 
     try {
       dispatch(addMessage({ text: userText, role: 'user', threadId }));
 
-      const messages = getState().chat.messagesByThread[threadId] || [];
-      const geminiMsgs = messages.map((m) => ({
+      const updatedMessages = getState().chat.messagesByThread[threadId];
+      const geminiMsgs = updatedMessages.map((m) => ({
         role: m.role === 'user' ? 'user' : 'model',
         parts: [{ text: m.text }],
       }));
 
       const response = await geminiRequest(geminiMsgs);
       dispatch(addMessage({ text: response, role: 'bot', threadId }));
-
-      if (shouldRename && messages.length === 1) {
-        const title = await generateTitle(userText);
-        dispatch(renameThread({ id: threadId, title }));
-      }
     } catch (err) {
       const errorMessage = '⚠️ ' + (err.message || 'Сталася помилка');
       dispatch(addMessage({ text: errorMessage, role: 'bot', threadId }));

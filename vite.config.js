@@ -13,7 +13,8 @@ export default defineConfig({
       '@features': '/src/features/slices',
       '@pages': '/src/pages',
       '@store': '/src/store',
-      '@utils': '/src/utils',
+      '@hooks': '/src/hooks',
+
      
 
     },

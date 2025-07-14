@@ -2,30 +2,19 @@ import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveThread, renameThread, deleteThread } from '@/features/slices/threadsSlice';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { useOutsideClick } from '@/hooks/useOutsideClick';
+import { useActiveThread } from '../../hooks/useActiveThread';
 
 function ChatList() {
   const [menuOpenForId, setMenuOpenForId] = useState(null);
   const [editingThreadId, setEditingThreadId] = useState(null);
-  const menuRef = useRef(null);
+  const menuRef = useOutsideClick(() => {
+    setMenuOpenForId(null);
+  });
   const dispatch = useDispatch();
   const threads = useSelector((state) => state.threads.threads);
-  const activeThreadId = useSelector((state) => state.threads.activeThreadId);
+  const activeThreadId = useActiveThread();
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setMenuOpenForId(null);
-      }
-    };
-
-    if (menuOpenForId !== null) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [menuOpenForId]);
   return (
     <ul className="flex-1 overflow-y-auto sidebar-scroll px-1">
       {threads.map((thread) => (
