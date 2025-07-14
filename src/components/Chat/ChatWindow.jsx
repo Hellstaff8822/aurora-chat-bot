@@ -18,8 +18,8 @@ function ChatWindow() {
   }, [messages, isBotTyping]);
 
   return (
-    <div className="flex-1 overflow-y-auto pt-6 bg-[#0F172A] sidebar-scroll">
-      <div className="w-full max-w-3xl mx-auto px-4 pb-[104px]">
+    <div className="h-[calc(100vh-80px)] overflow-y-auto pt-6 bg-[#0F172A] sidebar-scroll">
+      <div className="w-full max-w-3xl  pt-6  mx-auto px-4 pb-[104px]">
         {messages.map((m) => (
           <MessageItem key={m.id} text={m.text} role={m.role} />
         ))}

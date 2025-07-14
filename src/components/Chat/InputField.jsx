@@ -44,7 +44,6 @@ function InputField() {
             placeholder='Напишіть повідомлення...'
             className='flex-1 bg-transparent px-3 py-2 text-base rounded-md text-gray-100 placeholder-gray-400 outline-none resize-none max-h-48'
             rows="1" 
-            disabled={isBotTyping}
             onKeyDown={handleKeyDown} 
           />
           <button
