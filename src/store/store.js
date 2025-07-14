@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import messagesReducer from '../features/chat/messagesSlice';
-import threadsReducer from '../features/threads/threadsSlice';
+import chatReducer from '@/features/slices/chatSlice';
+import threadsReducer from '@/features/slices/threadsSlice';
 
 const loadState = () => {
   try {
@@ -32,7 +32,7 @@ const persistedState = loadState();
 
 const store = configureStore({
   reducer: {
-    messages: messagesReducer,
+    chat: chatReducer,
     threads: threadsReducer,
   },
   preloadedState: persistedState,

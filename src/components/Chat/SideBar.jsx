@@ -1,6 +1,6 @@
-import Header from '../components/Header';
-import ChatList from '../components/ChatList';
-import NewChatButton from './NewChatButton';
+import Header from '@components/chat/Header'; 
+import ChatList from '@components/chat/ChatList';
+import NewChatButton from '@common/NewChatButton';
 
 function Sidebar() {
   return (

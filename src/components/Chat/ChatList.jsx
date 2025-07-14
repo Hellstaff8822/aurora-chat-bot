@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveThread, renameThread, deleteThread } from '../features/threads/threadsSlice';
+import { setActiveThread, renameThread, deleteThread } from '@/features/slices/threadsSlice';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 
 function ChatList() {

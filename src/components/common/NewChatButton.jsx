@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { addThread } from "../features/threads/threadsSlice";
+import { addThread } from "@/features/slices/threadsSlice";
 import { Plus } from 'lucide-react';
 
 
