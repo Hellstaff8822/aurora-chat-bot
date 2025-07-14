@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveThread, renameThread, deleteThread } from '@/features/slices/threadsSlice';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
@@ -6,11 +6,26 @@ import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 function ChatList() {
   const [menuOpenForId, setMenuOpenForId] = useState(null);
   const [editingThreadId, setEditingThreadId] = useState(null);
-
+  const menuRef = useRef(null);
   const dispatch = useDispatch();
   const threads = useSelector((state) => state.threads.threads);
   const activeThreadId = useSelector((state) => state.threads.activeThreadId);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpenForId(null);
+      }
+    };
+
+    if (menuOpenForId !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuOpenForId]);
   return (
     <ul className="flex-1 overflow-y-auto sidebar-scroll px-1">
       {threads.map((thread) => (
@@ -58,6 +73,7 @@ function ChatList() {
 
           {menuOpenForId === thread.id && (
             <div
+              ref={menuRef}
               className="absolute top-10 right-2 w-40 bg-[#2A3248] border border-gray-600 rounded-md shadow-lg z-20"
               onClick={(e) => e.stopPropagation()}
             >

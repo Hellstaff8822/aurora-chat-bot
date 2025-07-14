@@ -2,7 +2,9 @@ import { useRef, useEffect } from 'react';
 import MessageItem from '@components/chat/MessageItem';
 import { useSelector } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
+
 const EMPTY_ARRAY = [];
+
 function ChatWindow() {
   const activeThreadId = useSelector((state) => state.threads.activeThreadId);
 
