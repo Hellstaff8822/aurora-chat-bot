@@ -1,59 +1,80 @@
+import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from 'nanoid';
 import { SendHorizontal } from 'lucide-react';
-import { sendMessage } from '@features/chatSlice';
-import { addThread } from '@features/threadsSlice';
-import { useRef } from 'react';
+import { sendMessage } from '@/features/slices/chatSlice';
+import { addThread } from '@/features/slices/threadsSlice';
 import { useActiveThread } from '@hooks/useActiveThread';
 
 function InputField() {
   const dispatch = useDispatch();
- const activeThreadId = useActiveThread();
-  const isBotTyping = useSelector((state) => state.chat.isBotTyping);
+  const [text, setText] = useState('');
+  const activeThreadId = useActiveThread();
+
+  const isBotTyping = useSelector((state) =>
+    activeThreadId ? state.chat.typingStatusByThread[activeThreadId] : false,
+  );
+
   const textareaRef = useRef(null);
 
   const handleSendMessage = () => {
-    const userText = textareaRef.current?.value.trim();
-    if (!userText) return;
+    const userText = text.trim();
+    if (!userText || isBotTyping) return;
 
-    if (activeThreadId) {
-      dispatch(sendMessage({ userText, threadId: activeThreadId }));
-    } else {
+    let threadId = activeThreadId;
+
+    if (!threadId) {
       const newThreadId = nanoid();
       dispatch(addThread({ id: newThreadId, title: 'Новий чат' }));
-      dispatch(sendMessage({ userText, threadId: newThreadId }));
+      threadId = newThreadId;
     }
 
-    if (textareaRef.current) {
-      textareaRef.current.value = '';
-    }
+    dispatch(sendMessage({ userText, threadId }));
+    setText('');
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault(); 
-      handleSendMessage(); 
+      e.preventDefault();
+      handleSendMessage();
     }
   };
 
+  useEffect(() => {
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = 'auto';
+      ta.style.height = `${ta.scrollHeight}px`;
+    }
+  }, [text]);
+
+  useEffect(() => {
+    if (text === '' && textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+  }, [text]);
+
   return (
-    <div className='fixed bottom-0 left-64 right-0 h-auto py-3 z-10'>
-      <div className='max-w-3xl mx-auto flex justify-center'>
-        <div className='w-full bg-[#0F172A]/60 backdrop-blur-md border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-end gap-2 shadow-md p-2 mb-4 rounded-2xl'>
+    <div className="fixed bottom-0 left-64 right-0 h-auto py-3 z-10">
+      <div className="max-w-3xl mx-auto flex justify-center">
+        <div className="w-full bg-slate-800/50 backdrop-blur-lg shadow-inner max-w-3xl mx-auto flex items-end gap-2 p-3 mb-4 rounded-2xl">
           <textarea
-            ref={textareaRef} 
-            placeholder='Напишіть повідомлення...'
-            className='flex-1 bg-transparent px-3 py-2 text-base rounded-md text-gray-100 placeholder-gray-400 outline-none resize-none max-h-48'
-            rows="1" 
-            onKeyDown={handleKeyDown} 
+            ref={textareaRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Напишіть повідомлення..."
+            className="flex-1 bg-transparent px-4 py-3 text-base rounded-md text-gray-100 placeholder-gray-400 outline-none resize-none max-h-48 sidebar-scroll"
+            rows="1"
+            onKeyDown={handleKeyDown}
+            disabled={isBotTyping}
           />
           <button
-            type='button' 
-            className='ml-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors cursor-pointer self-end'
-            disabled={isBotTyping}
-            onClick={handleSendMessage} 
+            type="button"
+            className="ml-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors cursor-pointer self-end"
+            disabled={isBotTyping || !text.trim()}
+            onClick={handleSendMessage}
           >
-            <SendHorizontal className='h-5 w-5 text-white' />
+            <SendHorizontal className="h-5 w-5 text-white" />
           </button>
         </div>
       </div>

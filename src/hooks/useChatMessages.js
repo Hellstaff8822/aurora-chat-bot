@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
-import { useActiveThread } from './useActiveThread'; 
+import { useActiveThread } from './useActiveThread';
 
 const EMPTY_ARRAY = [];
-
 
 export const useChatMessages = () => {
   const activeThreadId = useActiveThread();
@@ -11,8 +10,8 @@ export const useChatMessages = () => {
     if (!activeThreadId) {
       return EMPTY_ARRAY;
     }
-    
-    return state.chat.messagesByThread[activeThreadId] || EMPTY_ARRAY;
+
+    return state.chat?.messagesByThread?.[activeThreadId] || EMPTY_ARRAY;
   });
 
   return messages;

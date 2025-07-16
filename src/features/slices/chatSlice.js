@@ -6,32 +6,24 @@ import { renameThread, deleteThread } from '@/features/slices/threadsSlice';
 
 const initialState = {
   messagesByThread: {},
-  isBotTyping: false,
+  typingStatusByThread: {},
 };
 
 export const sendMessage = createAsyncThunk(
   'chat/sendMessage',
   async ({ userText, threadId }, { dispatch, getState, rejectWithValue }) => {
+    dispatch(setTyping({ threadId, isTyping: true }));
+
     const state = getState();
     const thread = state.threads.threads.find((t) => t.id === threadId);
-    const messages = state.chat.messagesByThread[threadId] || [];
-
-    if (thread?.title === 'Новий чат' && messages.length === 0) {
+    if (thread?.title === 'Новий чат' && (state.chat.messagesByThread[threadId]?.length || 0) === 0) {
       generateTitle(userText)
-        .then((title) => {
-          dispatch(renameThread({ id: threadId, title }));
-        })
-        .catch((err) => {
-          console.error('Помилка фонового перейменування чату:', err);
-        });
+        .then((title) => dispatch(renameThread({ id: threadId, title })))
+        .catch((err) => console.error('Помилка фонового перейменування чату:', err));
     }
-
-
-    dispatch(setTyping(true));
 
     try {
       dispatch(addMessage({ text: userText, role: 'user', threadId }));
-
       const updatedMessages = getState().chat.messagesByThread[threadId];
       const geminiMsgs = updatedMessages.map((m) => ({
         role: m.role === 'user' ? 'user' : 'model',
@@ -45,10 +37,11 @@ export const sendMessage = createAsyncThunk(
       dispatch(addMessage({ text: errorMessage, role: 'bot', threadId }));
       return rejectWithValue(err.message);
     } finally {
-      dispatch(setTyping(false));
+      dispatch(setTyping({ threadId, isTyping: false }));
     }
   },
 );
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -66,7 +59,10 @@ const chatSlice = createSlice({
       });
     },
     setTyping: (state, action) => {
-      state.isBotTyping = action.payload;
+      const { threadId, isTyping } = action.payload;
+      if (threadId) {
+        state.typingStatusByThread[threadId] = isTyping;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +70,9 @@ const chatSlice = createSlice({
       const threadIdToDelete = action.payload;
       if (state.messagesByThread[threadIdToDelete]) {
         delete state.messagesByThread[threadIdToDelete];
+      }
+      if (state.typingStatusByThread[threadIdToDelete]) {
+        delete state.typingStatusByThread[threadIdToDelete];
       }
     });
   },
