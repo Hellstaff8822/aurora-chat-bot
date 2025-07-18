@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react';
+import WelcomeScreen from './WelcomeScreen';
 import MessageItem from '@components/chat/MessageItem';
 import { useSelector } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
@@ -10,7 +11,7 @@ function ChatWindow() {
   const activeThreadId = useActiveThread();
 
   const isBotTyping = useSelector((state) =>
-    activeThreadId ? state.chat?.typingStatusByThread?.[activeThreadId] : false,
+    activeThreadId ? !!state.chat?.typingStatusByThread?.[activeThreadId] : false,
   );
 
   const endRef = useRef(null);
@@ -19,17 +20,20 @@ function ChatWindow() {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isBotTyping]);
 
-  if (!activeThreadId) {
+  // ✅ Об'єднуємо обидві умови: якщо немає активного чату АБО він порожній
+  if (!activeThreadId || (messages.length === 0 && !isBotTyping)) {
     return (
-      <div className="h-full flex items-center justify-center bg-[#0F172A]">
-        <p className="text-gray-400 text-lg">Оберіть або створіть новий чат</p>
+      // Рендеримо один і той самий код для обох випадків
+      <div className="flex-1 flex justify-center items-center bg-[#0F172A]">
+        <WelcomeScreen />
       </div>
     );
   }
 
+  // Цей код тепер виконується ТІЛЬКИ якщо в чаті є повідомлення
   return (
     <div className="h-[calc(100vh-80px)] overflow-y-auto pt-6 bg-[#0F172A] sidebar-scroll">
-      <div className="w-full max-w-3xl pt-6 mx-auto px-4 pb-[104px]">
+      <div className="w-full max-w-3xl mx-auto px-4 pb-[104px]">
         {messages.map((m) => (
           <MessageItem key={m.id} text={m.text} role={m.role} />
         ))}
