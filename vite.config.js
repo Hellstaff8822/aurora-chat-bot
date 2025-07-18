@@ -15,6 +15,7 @@ export default defineConfig({
       '@store': '/src/store',
       '@hooks': '/src/hooks',
       '@utils': '/src/utils',
+      '@lib': '/src/lib',
      
 
     },

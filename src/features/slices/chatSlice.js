@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
-import { geminiRequest } from '../../lib/geminiRequest';
-import { generateTitle } from '../../lib/geminiTitle';
 import { renameThread, deleteThread } from '@/features/slices/threadsSlice';
+import { ChatService } from '@/lib/ChatService';
 
 const initialState = {
   messagesByThread: {},
@@ -15,7 +14,7 @@ export const sendMessage = createAsyncThunk(
     const state = getState();
     const thread = state.threads.threads.find((t) => t.id === threadId);
     if (thread?.title === 'Новий чат' && (state.chat.messagesByThread[threadId]?.length || 0) === 0) {
-      generateTitle(userText)
+      ChatService.generateChatTitle(userText)
         .then((title) => {
           dispatch(renameThread({ id: threadId, title }));
         })
@@ -35,7 +34,7 @@ export const sendMessage = createAsyncThunk(
         parts: [{ text: m.text }],
       }));
 
-      const response = await geminiRequest(geminiMsgs);
+      const response = await ChatService.getBotResponse(geminiMsgs);
       dispatch(addMessage({ text: response, role: 'bot', threadId }));
     } catch (err) {
       const errorMessage = '⚠️ ' + (err.message || 'Сталася помилка');
