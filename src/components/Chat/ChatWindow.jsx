@@ -20,17 +20,14 @@ function ChatWindow() {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isBotTyping]);
 
-  // ✅ Об'єднуємо обидві умови: якщо немає активного чату АБО він порожній
   if (!activeThreadId || (messages.length === 0 && !isBotTyping)) {
     return (
-      // Рендеримо один і той самий код для обох випадків
       <div className="flex-1 flex justify-center items-center bg-[#0F172A]">
         <WelcomeScreen />
       </div>
     );
   }
 
-  // Цей код тепер виконується ТІЛЬКИ якщо в чаті є повідомлення
   return (
     <div className="h-[calc(100vh-80px)] overflow-y-auto pt-6 bg-[#0F172A] sidebar-scroll">
       <div className="w-full max-w-3xl mx-auto px-4 pb-[104px]">
