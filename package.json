@@ -22,7 +22,8 @@
     "react-loading-dot": "^1.0.6",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
-    "react-spinners": "^0.17.0"
+    "react-spinners": "^0.17.0",
+    "reselect": "^5.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
