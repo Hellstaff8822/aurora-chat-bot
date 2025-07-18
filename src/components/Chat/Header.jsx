@@ -1,4 +1,4 @@
-import logo from '../../assets/alora-128.png'
+import logo from '../../assets/aurora-128.png'
 
 function Header() {
     return(

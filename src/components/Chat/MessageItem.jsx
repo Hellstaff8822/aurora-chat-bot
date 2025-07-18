@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { User } from 'lucide-react';
-import BotAvatar from '../../assets/alora128_enhanced.png';
+import BotAvatar from '../../assets/aurora128_enhanced.png';
 
 const MessageItem = memo(({ text, role }) => {
   const isBot = role === 'bot';

@@ -1,17 +1,16 @@
-@import "tailwindcss";
-
+@import 'tailwindcss';
 
 .sidebar-scroll {
-    scrollbar-width: both;
-    scrollbar-color: #2d3952 #181e2a;
-  }
-  .sidebar-scroll::-webkit-scrollbar {
-    width: 8px;
-  }
-  .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: #2d3952;
-    border-radius: 8px;
-  }
-  .sidebar-scroll::-webkit-scrollbar-track {
-    background: #181e2a;
-  }
+  scrollbar-width: both;
+  scrollbar-color: #2d3952 #181e2a;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #2d3952;
+  border-radius: 8px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #181e2a;
+}
