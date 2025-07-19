@@ -1,20 +1,32 @@
 import { useRef, useEffect } from 'react';
 import WelcomeScreen from './WelcomeScreen';
 import MessageItem from '@components/chat/MessageItem';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
 import { useChatMessages } from '@/hooks/useChatMessages';
 import { useActiveThread } from '@/hooks/useActiveThread';
+import { fetchMessagesForThread } from '@/features/slices/chatSlice';
 
 function ChatWindow() {
   const messages = useChatMessages();
   const activeThreadId = useActiveThread();
+  const dispatch = useDispatch();
 
   const isBotTyping = useSelector((state) =>
     activeThreadId ? !!state.chat?.typingStatusByThread?.[activeThreadId] : false,
   );
 
+  const areMessagesLoading = useSelector((state) =>
+    activeThreadId ? !!state.chat.loadingStatusByThread?.[activeThreadId] : false
+  );
+
   const endRef = useRef(null);
+
+  useEffect(() => {
+    if (activeThreadId) {
+      dispatch(fetchMessagesForThread(activeThreadId));
+    }
+  }, [activeThreadId, dispatch]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -24,6 +36,14 @@ function ChatWindow() {
     return (
       <div className="flex-1 flex justify-center items-center bg-[#0F172A]">
         <WelcomeScreen />
+      </div>
+    );
+  }
+
+  if (areMessagesLoading) {
+    return (
+      <div className="flex-1 flex justify-center items-center bg-[#0F172A]">
+        <PulseLoader color="white" size={10} />
       </div>
     );
   }

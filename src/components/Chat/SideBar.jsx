@@ -22,10 +22,7 @@ function Sidebar() {
       <div className="p-4 border-b border-[#1E2536]">
         <NewChatButton />
       </div>
-
-      <div className="flex-1 overflow-y-auto sidebar-scroll">
-        <ChatList />
-      </div>
+      <ChatList />
 
       {user && (
         <div className="p-4 border-t border-[#1E2536]">

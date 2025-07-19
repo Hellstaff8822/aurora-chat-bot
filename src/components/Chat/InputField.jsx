@@ -1,32 +1,47 @@
-import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
-import { SendHorizontal } from 'lucide-react';
-import { sendMessage } from '@/features/slices/chatSlice';
-import { addThread } from '@/features/slices/threadsSlice';
+import { createThread, setActiveThread } from '@features/threadsSlice';
+import { sendMessage } from '@features/chatSlice';
+import { useRef, useState, useEffect } from 'react';
 import { useActiveThread } from '@hooks/useActiveThread';
+import { SendHorizontal } from 'lucide-react';
 
 function InputField() {
   const dispatch = useDispatch();
-  const [text, setText] = useState('');
   const activeThreadId = useActiveThread();
+  const user = useSelector((state) => state.auth.user);
+  const [text, setText] = useState('');
 
   const isBotTyping = useSelector((state) =>
-    activeThreadId ? state.chat.typingStatusByThread[activeThreadId] : false,
+    activeThreadId ? !!state.chat.typingStatusByThread?.[activeThreadId] : false,
   );
 
   const textareaRef = useRef(null);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const userText = text.trim();
     if (!userText || isBotTyping) return;
 
     let threadId = activeThreadId;
 
     if (!threadId) {
-      const newThreadId = nanoid();
-      dispatch(addThread({ id: newThreadId, title: 'Новий чат' }));
-      threadId = newThreadId;
+      if (!user) {
+        alert('Будь ласка, увійдіть, щоб почати чат.');
+        return;
+      }
+      try {
+        const resultAction = await dispatch(createThread(user.uid));
+        if (createThread.fulfilled.match(resultAction)) {
+          threadId = resultAction.payload.id;
+          dispatch(setActiveThread(threadId));
+        } else {
+          alert('Не вдалося створити чат!');
+          return;
+        }
+      } catch (error) {
+        console.error('Не вдалося створити чат:', error);
+        alert('Сталася помилка при створенні чату.');
+        return;
+      }
     }
 
     dispatch(sendMessage({ userText, threadId }));
@@ -57,7 +72,7 @@ function InputField() {
   return (
     <div className="fixed bottom-0 left-64 right-0 h-auto py-3 z-10">
       <div className="max-w-3xl mx-auto flex justify-center">
-        <div className="w-full bg-slate-800/50 backdrop-blur-lg shadow-inner max-w-3xl mx-auto flex items-end gap-2 p-3 mb-4 rounded-2xl">
+        <div className="w-full bg-[#0F172A]/60 backdrop-blur-lg border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-end gap-2 shadow-md p-3 mb-4 rounded-2xl">
           <textarea
             ref={textareaRef}
             value={text}
@@ -81,5 +96,4 @@ function InputField() {
     </div>
   );
 }
-
 export default InputField;

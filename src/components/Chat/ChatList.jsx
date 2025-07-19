@@ -1,19 +1,23 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setActiveThread, renameThread, deleteThread } from '@/features/slices/threadsSlice';
+import { setActiveThread, renameThreadAsync, deleteThread } from '@/features/slices/threadsSlice';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { fetchMessagesForThread } from '@/features/slices/chatSlice'; // ✅ Імпортуємо Thunk
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { useActiveThread } from '../../hooks/useActiveThread';
 
 function ChatList() {
   const [menuOpenForId, setMenuOpenForId] = useState(null);
   const [editingThreadId, setEditingThreadId] = useState(null);
-  const menuRef = useOutsideClick(() => {
-    setMenuOpenForId(null);
-  });
+  const menuRef = useOutsideClick(() => setMenuOpenForId(null));
   const dispatch = useDispatch();
   const threads = useSelector((state) => state.threads.threads);
   const activeThreadId = useActiveThread();
+
+  const handleThreadClick = (threadId) => {
+    dispatch(setActiveThread(threadId));
+    dispatch(fetchMessagesForThread(threadId));
+  };
 
   return (
     <ul className="flex-1 overflow-y-auto sidebar-scroll px-1">
@@ -25,7 +29,7 @@ function ChatList() {
           }`}
           onClick={() => {
             if (!editingThreadId) {
-              dispatch(setActiveThread(thread.id));
+              handleThreadClick(thread.id);
             }
           }}
         >
@@ -37,12 +41,12 @@ function ChatList() {
                 className="bg-gray-800 text-white p-1 rounded w-full outline-none"
                 autoFocus
                 onBlur={(e) => {
-                  dispatch(renameThread({ id: thread.id, title: e.target.value }));
+                  dispatch(renameThreadAsync({ id: thread.id, title: e.target.value }));
                   setEditingThreadId(null);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    dispatch(renameThread({ id: thread.id, title: e.target.value }));
+                    dispatch(renameThreadAsync({ id: thread.id, title: e.target.value }));
                     setEditingThreadId(null);
                   }
                 }}
