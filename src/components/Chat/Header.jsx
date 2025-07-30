@@ -1,10 +1,11 @@
-import logo from '../../assets/aurora-128.png'
+import logo from '../../assets/aurora128_enhanced.png'
 
 function Header() {
     return(
         <>
-      <div className="flex items-center p-4 bg-transparent text-white">
-      <img src={logo} alt="logo" className="h-6 mr-2" /> Aurora
+      <div className="flex items-center  p-4 bg-transparent text-white">
+      <img src={logo} alt="logo" className="h-6 mr-2" />
+      <span className="text-xl font-bold">Aurora</span>
       </div>
       </>
     )

@@ -18,7 +18,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        dispatch(setUser({ email: user.email, uid: user.uid, name: user.displayName }));
+        dispatch(setUser({ email: user.email, uid: user.uid, name: user.displayName, photoURL: user.photoURL }));
         console.log('user.uid:', user.uid);
 
         const resultAction = await dispatch(fetchThreads(user.uid));

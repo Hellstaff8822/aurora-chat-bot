@@ -3,14 +3,14 @@ import * as Yup from 'yup';
 import { signInWithEmail, signUpWithEmail } from '@lib/auth';
 import { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { useDispatch } from 'react-redux';  
-import { setUser } from '@features/authSlice'; 
+import { useDispatch } from 'react-redux';
+import { setUser } from '@features/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm({ isLoginMode, setIsLoginMode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
   const navigete = useNavigate();
 
   useEffect(() => {
@@ -29,26 +29,28 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
 
   const formik = useFormik({
     initialValues: {
+      nickname: '',
       email: '',
       password: '',
     },
     validationSchema: Yup.object({
       email: Yup.string().email('Неправильний формат email').required("Це поле є обов'язковим"),
       password: Yup.string().min(6, 'Пароль має бути не коротшим за 6 символів').required("Це поле є обов'язковим"),
+      nickname: Yup.string().min(3,'Нікнейм має бути не коротшим за 3 символи').required("Це поле є обов'язковим"),
     }),
     onSubmit: async (values) => {
       setIsLoading(true);
       setSuccessMessage('');
       try {
         const authFunction = isLoginMode ? signInWithEmail : signUpWithEmail;
-        const result = await authFunction(values.email, values.password);
+        const result = await authFunction(values.email, values.password, values.nickname);
 
         if (result.error) {
           alert(`Помилка: ${result.error}`);
         } else if (result.user) {
           if (isLoginMode) {
-            dispatch(setUser({ email: result.user.email, uid: result.user.uid }));
-            navigete('/'); 
+            dispatch(setUser({ email: result.user.email, uid: result.user.uid, nickname: values.nickname, photoURL: null }));
+            navigete('/');
           } else {
             setSuccessMessage('Акаунт успішно створено! Перемикаємо на вхід...');
             formik.resetForm();
@@ -65,6 +67,19 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
     <form onSubmit={formik.handleSubmit} className="space-y-4">
       <div>
         <input
+          id="nickname"
+          name="nickname"
+          type="text"
+          placeholder="Name"
+          {...formik.getFieldProps('nickname')}
+          className="w-full px-4 py-2 bg-slate-800/50 text-white border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        {formik.touched.nickname && formik.errors.nickname ? (
+          <div className="text-red-500 text-sm mt-1">{formik.errors.nickname}</div>
+        ) : null}
+      </div>
+      <div>
+        <input
           id="email"
           name="email"
           type="email"
@@ -76,6 +91,7 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
           <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
         ) : null}
       </div>
+
       <div>
         <input
           id="password"

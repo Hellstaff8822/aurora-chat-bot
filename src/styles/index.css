@@ -1,5 +1,9 @@
 @import 'tailwindcss';
 
+body{
+  font-family: "DM Sans", sans-serif;
+}
+
 .sidebar-scroll {
   scrollbar-width: both;
   scrollbar-color: #2d3952 #181e2a;
