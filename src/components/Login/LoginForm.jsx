@@ -36,7 +36,7 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
     validationSchema: Yup.object({
       email: Yup.string().email('Неправильний формат email').required("Це поле є обов'язковим"),
       password: Yup.string().min(6, 'Пароль має бути не коротшим за 6 символів').required("Це поле є обов'язковим"),
-      nickname: Yup.string().min(3,'Нікнейм має бути не коротшим за 3 символи').required("Це поле є обов'язковим"),
+      nickname: Yup.string().min(3, 'Нікнейм має бути не коротшим за 3 символи').required("Це поле є обов'язковим"),
     }),
     onSubmit: async (values) => {
       setIsLoading(true);
@@ -49,7 +49,9 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
           alert(`Помилка: ${result.error}`);
         } else if (result.user) {
           if (isLoginMode) {
-            dispatch(setUser({ email: result.user.email, uid: result.user.uid, nickname: values.nickname, photoURL: null }));
+            dispatch(
+              setUser({ email: result.user.email, uid: result.user.uid, nickname: values.nickname, photoURL: null }),
+            );
             navigete('/');
           } else {
             setSuccessMessage('Акаунт успішно створено! Перемикаємо на вхід...');

@@ -10,13 +10,19 @@ function GoogleSignInButton() {
   const handleGoogleSignIn = async () => {
     const result = await signInWithGoogle();
     if (result.user) {
-      dispatch(setUser({ email: result.user.email, uid: result.user.uid, name: result.user.displayName, photoURL: result.user.photoURL }));
+      dispatch(
+        setUser({
+          email: result.user.email,
+          uid: result.user.uid,
+          name: result.user.displayName,
+          photoURL: result.user.photoURL,
+        }),
+      );
       navigate('/');
     } else if (result.error) {
       alert(`Помилка: ${result.error}`);
     }
   };
-
 
   return (
     <button

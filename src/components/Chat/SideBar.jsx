@@ -1,14 +1,24 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { LogOut } from 'lucide-react';
+import { LogOut, Plus } from 'lucide-react';
+import { createThread } from '@/features/slices/threadsSlice';
+import Button from '@/components/common/Button';
 import Header from '@components/chat/Header';
 import ChatList from '@components/chat/ChatList';
-import NewChatButton from '@common/NewChatButton';
 import { signOutUser } from '@lib/auth';
 import AuroraAvatar from '../../assets/aurora128_enhanced.png';
 
 function Sidebar() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+
+  const handleNewChat = () => {
+    if (!user) {
+      alert('Будь ласка, увійдіть в акаунт, щоб створити новий чат.');
+      return;
+    }
+    dispatch(createThread(user.uid));
+  };
 
   const handleLogout = () => {
     signOutUser();
@@ -20,7 +30,10 @@ function Sidebar() {
         <Header />
       </Link>
       <div className="p-4 border-b border-[#1E2536]">
-        <NewChatButton />
+        <Button onClick={handleNewChat} variant="primary">
+          <Plus className="w-5 h-5 mr-3" />
+          New Chat
+        </Button>
       </div>
       <ChatList />
 

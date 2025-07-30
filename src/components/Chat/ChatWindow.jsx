@@ -17,7 +17,7 @@ function ChatWindow() {
   );
 
   const areMessagesLoading = useSelector((state) =>
-    activeThreadId ? !!state.chat.loadingStatusByThread?.[activeThreadId] : false
+    activeThreadId ? !!state.chat.loadingStatusByThread?.[activeThreadId] : false,
   );
 
   const endRef = useRef(null);
