@@ -1,4 +1,4 @@
-// src/hooks/useActiveThread.js
+
 import { useSelector } from 'react-redux';
 
 

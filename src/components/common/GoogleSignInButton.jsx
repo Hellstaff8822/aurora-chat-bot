@@ -14,7 +14,7 @@ function GoogleSignInButton() {
         setUser({
           email: result.user.email,
           uid: result.user.uid,
-          name: result.user.displayName,
+          nickname: result.user.displayName || result.user.email,
           photoURL: result.user.photoURL,
         }),
       );
@@ -28,7 +28,7 @@ function GoogleSignInButton() {
     <button
       onClick={handleGoogleSignIn}
       type="button"
-      className="w-full flex items-center justify-center gap-3 py-2 px-4 bg-white text-gray-800 font-semibold rounded-md hover:bg-gray-200 transition"
+      className="flex gap-3 justify-center items-center px-4 py-2 w-full font-semibold text-gray-800 bg-white rounded-md transition hover:bg-gray-200"
     >
       <img className="w-6 h-6" src={GoogleLogo} alt="Google" />
       Увійти через Google

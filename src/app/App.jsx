@@ -1,4 +1,4 @@
-// src/App.jsx
+
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -18,8 +18,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        dispatch(setUser({ email: user.email, uid: user.uid, name: user.displayName, photoURL: user.photoURL }));
-        console.log('user.uid:', user.uid);
+        dispatch(setUser({ email: user.email, uid: user.uid, nickname: user.displayName || user.email, photoURL: user.photoURL }));
 
         const resultAction = await dispatch(fetchThreads(user.uid));
 

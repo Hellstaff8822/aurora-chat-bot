@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setActiveThread, renameThreadAsync, deleteThread } from '@/features/slices/threadsSlice';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
-import { fetchMessagesForThread } from '@/features/slices/chatSlice'; // ✅ Імпортуємо Thunk
+import { fetchMessagesForThread } from '@/features/slices/chatSlice';
 import { useOutsideClick } from '@/hooks/useOutsideClick';
 import { useActiveThread } from '../../hooks/useActiveThread';
 
@@ -20,7 +20,7 @@ function ChatList() {
   };
 
   return (
-    <ul className="flex-1 overflow-y-auto sidebar-scroll px-1">
+    <ul className="overflow-y-auto flex-1 px-1 sidebar-scroll">
       {threads.map((thread) => (
         <li
           key={thread.id}
@@ -33,12 +33,12 @@ function ChatList() {
             }
           }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center">
             {editingThreadId === thread.id ? (
               <input
                 type="text"
                 defaultValue={thread.title}
-                className="bg-gray-800 text-white p-1 rounded w-full outline-none"
+                className="p-1 w-full text-white bg-gray-800 rounded outline-none"
                 autoFocus
                 onBlur={(e) => {
                   dispatch(renameThreadAsync({ id: thread.id, title: e.target.value }));
@@ -56,7 +56,7 @@ function ChatList() {
             )}
 
             <MoreVertical
-              className="w-5 h-5 text-gray-400 hover:text-white flex-shrink-0 ml-2"
+              className="flex-shrink-0 ml-2 w-5 h-5 text-gray-400 hover:text-white"
               onClick={(e) => {
                 e.stopPropagation();
                 setMenuOpenForId(menuOpenForId === thread.id ? null : thread.id);
@@ -71,23 +71,23 @@ function ChatList() {
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="flex items-center w-full px-3 py-2 text-left text-sm text-white hover:bg-gray-700 cursor-pointer"
+                className="flex items-center px-3 py-2 w-full text-sm text-left text-white cursor-pointer hover:bg-gray-700"
                 onClick={() => {
                   setEditingThreadId(thread.id);
                   setMenuOpenForId(null);
                 }}
               >
-                <Pencil className="w-4 h-4 mr-2" />
+                <Pencil className="mr-2 w-4 h-4" />
                 Редагувати
               </button>
               <button
-                className="flex items-center w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-gray-700 cursor-pointer"
+                className="flex items-center px-3 py-2 w-full text-sm text-left text-red-400 cursor-pointer hover:bg-gray-700"
                 onClick={() => {
                   dispatch(deleteThread(thread.id));
                   setMenuOpenForId(null);
                 }}
               >
-                <Trash2 className="w-4 h-4 mr-2" />
+                <Trash2 className="mr-2 w-4 h-4" />
                 Видалити
               </button>
             </div>

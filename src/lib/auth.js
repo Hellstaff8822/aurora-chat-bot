@@ -1,5 +1,5 @@
 import { auth } from './firebase';
-import { signOut } from 'firebase/auth';
+import { signOut, updateProfile } from 'firebase/auth';
 
 import {
   GoogleAuthProvider,
@@ -13,7 +13,6 @@ const googleProvider = new GoogleAuthProvider();
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    console.log('Успішний вхід через Google:', result.user);
     return { user: result.user };
   } catch (error) {
     console.error('Помилка входу через Google:', error.message);
@@ -21,10 +20,10 @@ export const signInWithGoogle = async () => {
   }
 };
 
-export const signUpWithEmail = async (email, password) => {
+export const signUpWithEmail = async (email, password, nickname) => {
   try {
     const result = await createUserWithEmailAndPassword(auth, email, password);
-    console.log('Успішна реєстрація:', result.user);
+    await updateProfile(result.user, { displayName: nickname });
     return { user: result.user };
   } catch (error) {
     console.error('Помилка реєстрації:', error.message);
@@ -35,7 +34,6 @@ export const signUpWithEmail = async (email, password) => {
 export const signInWithEmail = async (email, password) => {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);
-    console.log('Успішний вхід:', result.user);
     return { user: result.user };
   } catch (error) {
     console.error('Помилка входу:', error.message);

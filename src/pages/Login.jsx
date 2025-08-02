@@ -9,23 +9,30 @@ function Login() {
     <div className="flex items-center justify-center h-screen bg-[#0F172A]">
       <div className="w-full max-w-sm p-8 space-y-6 bg-[#1E293B]/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl shadow-2xl">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white flex items-center justify-center gap-5">
+          <h2 className="flex gap-5 justify-center items-center text-2xl font-bold text-white">
             {isLoginMode ? 'Вхід в Aurora' : 'Створення акаунту'}
             <img className="w-12" src={logoAurora} alt="logo" />
           </h2>
           <p className="mt-2 text-sm text-gray-400">Продовжуйте спілкування з AI</p>
         </div>
-        <GoogleSignInButton />
+        <LoginForm isLoginMode={isLoginMode} />
+        
         <div className="relative">
+          <div className="flex absolute inset-0 items-center">
+            <div className="w-full border-t border-slate-600"></div>
+          </div>
+          <div className="flex relative justify-center text-sm">
+            <span className="px-2 bg-[#1E293B]/50 text-slate-400">АБО</span>
+          </div>
         </div>
         
-        <LoginForm isLoginMode={isLoginMode} setIsLoginMode={setIsLoginMode} />
+        <GoogleSignInButton />
 
-        <div className="text-center text-sm text-gray-400">
+        <div className="text-sm text-center text-gray-400">
           {isLoginMode ? 'Немає акаунту?' : 'Вже є акаунт?'}
           <button 
             onClick={() => setIsLoginMode(!isLoginMode)} 
-            className="font-semibold text-blue-400 hover:text-blue-300 ml-2"
+            className="ml-2 font-semibold text-blue-400 hover:text-blue-300"
           >
             {isLoginMode ? 'Зареєструватися' : 'Увійти'}
           </button>

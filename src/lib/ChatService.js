@@ -54,15 +54,16 @@ export const ChatService = {
 
       const formattedMessages = messagesArr
         .filter((m) => {
-          // Додаткова перевірка для безпеки
-          return m && 
-                 m.parts && 
-                 Array.isArray(m.parts) && 
-                 m.parts.length > 0 && 
-                 m.parts[0] && 
-                 m.parts[0].text && 
-                 m.parts[0].text.trim() && 
-                 (m.role === 'user' || m.role === 'model');
+          return (
+            m &&
+            m.parts &&
+            Array.isArray(m.parts) &&
+            m.parts.length > 0 &&
+            m.parts[0] &&
+            m.parts[0].text &&
+            m.parts[0].text.trim() &&
+            (m.role === 'user' || m.role === 'model')
+          );
         })
         .map((m) => ({
           role: m.role,

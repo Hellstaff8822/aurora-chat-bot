@@ -6,16 +6,17 @@ import { ClipLoader } from 'react-spinners';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@features/authSlice';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
-function LoginForm({ isLoginMode, setIsLoginMode }) {
+function LoginForm({ isLoginMode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const navigete = useNavigate();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setSuccessMessage('');
-  }, [isLoginMode]);
+
 
   useEffect(() => {
     if (successMessage) {
@@ -27,9 +28,38 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
     }
   }, [successMessage]);
 
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case 'auth/user-not-found':
+        return 'Користувача з такою поштою не знайдено';
+      case 'auth/wrong-password':
+        return 'Невірний пароль';
+      case 'auth/invalid-email':
+        return 'Неправильний формат email';
+      case 'auth/weak-password':
+        return 'Пароль занадто слабкий (мінімум 6 символів)';
+      case 'auth/email-already-in-use':
+        return 'Користувач з такою поштою вже існує';
+      case 'auth/too-many-requests':
+        return 'Забагато спроб. Спробуйте пізніше';
+      default:
+        return 'Сталася помилка. Спробуйте ще раз';
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
-      nickname: '',
+      nickname: isLoginMode ? '' : '',
       email: '',
       password: '',
     },
@@ -41,22 +71,39 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
     onSubmit: async (values) => {
       setIsLoading(true);
       setSuccessMessage('');
+      setErrorMessage('');
       try {
-        const authFunction = isLoginMode ? signInWithEmail : signUpWithEmail;
-        const result = await authFunction(values.email, values.password, values.nickname);
-
-        if (result.error) {
-          alert(`Помилка: ${result.error}`);
-        } else if (result.user) {
-          if (isLoginMode) {
+        if (isLoginMode) {
+          const result = await signInWithEmail(values.email, values.password);
+          if (result.error) {
+            const errorText = getErrorMessage(result.error);
+            setErrorMessage(errorText);
+          } else if (result.user) {
             dispatch(
-              setUser({ email: result.user.email, uid: result.user.uid, nickname: values.nickname, photoURL: null }),
+              setUser({
+                email: result.user.email,
+                uid: result.user.uid,
+                nickname: result.user.displayName || result.user.email, 
+                photoURL: result.user.photoURL,
+              })
             );
-            navigete('/');
-          } else {
-            setSuccessMessage('Акаунт успішно створено! Перемикаємо на вхід...');
-            formik.resetForm();
-            setTimeout(() => setIsLoginMode(true), 2000);
+            navigate('/');
+          }
+        } else {
+          const result = await signUpWithEmail(values.email, values.password, values.nickname);
+          if (result.error) {
+            const errorText = getErrorMessage(result.error);
+            setErrorMessage(errorText);
+          } else if (result.user) {
+            dispatch(
+              setUser({
+                email: result.user.email,
+                uid: result.user.uid,
+                nickname: result.user.displayName || values.nickname,
+                photoURL: result.user.photoURL,
+              })
+            );
+            navigate('/');
           }
         }
       } finally {
@@ -72,12 +119,12 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
           id="nickname"
           name="nickname"
           type="text"
-          placeholder="Name"
+          placeholder="Нікнейм"
           {...formik.getFieldProps('nickname')}
-          className="w-full px-4 py-2 bg-slate-800/50 text-white border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {formik.touched.nickname && formik.errors.nickname ? (
-          <div className="text-red-500 text-sm mt-1">{formik.errors.nickname}</div>
+          <div className="mt-1 text-sm text-red-500">{formik.errors.nickname}</div>
         ) : null}
       </div>
       <div>
@@ -85,37 +132,50 @@ function LoginForm({ isLoginMode, setIsLoginMode }) {
           id="email"
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="Електронна пошта"
           {...formik.getFieldProps('email')}
-          className="w-full px-4 py-2 bg-slate-800/50 text-white border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         {formik.touched.email && formik.errors.email ? (
-          <div className="text-red-500 text-sm mt-1">{formik.errors.email}</div>
+          <div className="mt-1 text-sm text-red-500">{formik.errors.email}</div>
         ) : null}
       </div>
 
-      <div>
+      <div className="relative">
         <input
           id="password"
           name="password"
-          type="password"
+          type={showPassword ? "text" : "password"}
           placeholder="Пароль"
           {...formik.getFieldProps('password')}
-          className="w-full px-4 py-2 bg-slate-800/50 text-white border border-slate-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 pr-10 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-2 top-1/2 text-gray-400 transition-colors transform -translate-y-1/2 hover:text-white"
+        >
+          {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+        </button>
         {formik.touched.password && formik.errors.password ? (
-          <div className="text-red-500 text-sm mt-1">{formik.errors.password}</div>
+          <div className="mt-1 text-sm text-red-500">{formik.errors.password}</div>
         ) : null}
       </div>
 
+      {errorMessage && (
+        <div className="p-3 text-sm text-center text-red-400 rounded-md border bg-red-900/20 border-red-500/30">
+          {errorMessage}
+        </div>
+      )}
+
       {successMessage && (
-        <div className="text-green-400 text-sm text-center p-2 bg-green-900/20 rounded-md">{successMessage}</div>
+        <div className="p-2 text-sm text-center text-green-400 rounded-md bg-green-900/20">{successMessage}</div>
       )}
 
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full h-10 flex justify-center items-center py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition disabled:bg-gray-500"
+        className="flex justify-center items-center px-4 py-2 w-full h-10 font-semibold text-white bg-blue-600 rounded-md transition hover:bg-blue-700 disabled:bg-gray-500"
       >
         {isLoading ? <ClipLoader color="#ffffff" size={20} /> : isLoginMode ? 'Увійти' : 'Зареєструватися'}
       </button>

@@ -31,7 +31,7 @@ function Sidebar() {
       </Link>
       <div className="p-4 border-b border-[#1E2536]">
         <Button onClick={handleNewChat} variant="primary">
-          <Plus className="w-5 h-5 mr-3" />
+          <Plus className="mr-3 w-5 h-5" />
           New Chat
         </Button>
       </div>
@@ -39,8 +39,8 @@ function Sidebar() {
 
       {user && (
         <div className="p-4 border-t border-[#1E2536]">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-3">
+          <div className="flex gap-2 justify-between items-center">
+            <div className="flex gap-3 items-center">
               {user.photoURL ? (
                 <img
                   src={user.photoURL}
@@ -54,14 +54,14 @@ function Sidebar() {
                   className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145] bg-[#3a445f] p-1"
                 />
               )}
-              <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.name || user.email}>
-                {user.nickname || user.name || user.email}
+              <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.email}>
+                {user.nickname || user.email}
               </div>
             </div>
             <button
               onClick={handleLogout}
               title="Вийти"
-              className="p-2 rounded-md text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
+              className="p-2 text-gray-400 rounded-md transition-colors hover:bg-gray-700 hover:text-white"
             >
               <LogOut className="w-5 h-5 cursor-pointer" />
             </button>
