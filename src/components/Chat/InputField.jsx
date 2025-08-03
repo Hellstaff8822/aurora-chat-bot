@@ -70,26 +70,26 @@ function InputField() {
   }, [text]);
 
   return (
-    <div className="fixed bottom-0 left-64 right-0 h-auto py-3 z-10">
-      <div className="max-w-3xl mx-auto flex justify-center">
+    <div className="fixed right-0 bottom-0 left-64 z-10 py-3 h-auto">
+      <div className="flex justify-center mx-auto max-w-3xl">
         <div className="w-full bg-[#0F172A]/60 backdrop-blur-lg border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-end gap-2 shadow-md p-3 mb-4 rounded-2xl">
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Напишіть повідомлення..."
-            className="flex-1 bg-transparent px-4 py-3 text-base rounded-md text-gray-100 placeholder-gray-400 outline-none resize-none max-h-48 sidebar-scroll"
+            className="flex-1 px-4 py-3 max-h-48 text-base placeholder-gray-400 text-gray-100 bg-transparent rounded-md outline-none resize-none sidebar-scroll"
             rows="1"
             onKeyDown={handleKeyDown}
             disabled={isBotTyping}
           />
           <button
             type="button"
-            className="ml-2 p-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-full transition-colors cursor-pointer self-end"
+            className="self-end p-2 ml-2 bg-blue-600 rounded-full transition-colors cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isBotTyping || !text.trim()}
             onClick={handleSendMessage}
           >
-            <SendHorizontal className="h-5 w-5 text-white" />
+            <SendHorizontal className="w-5 h-5 text-white" />
           </button>
         </div>
       </div>

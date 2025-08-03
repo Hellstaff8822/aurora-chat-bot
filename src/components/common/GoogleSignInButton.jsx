@@ -28,7 +28,7 @@ function GoogleSignInButton() {
     <button
       onClick={handleGoogleSignIn}
       type="button"
-      className="flex gap-3 justify-center items-center px-4 py-2 w-full font-semibold text-gray-800 bg-white rounded-md transition hover:bg-gray-200"
+      className="py-2.5 px-5 w-full text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 hover:transform hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex gap-3 justify-center items-center h-12"
     >
       <img className="w-6 h-6" src={GoogleLogo} alt="Google" />
       Увійти через Google

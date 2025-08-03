@@ -63,6 +63,11 @@ const threadsSlice = createSlice({
       state.activeThreadId = action.payload;
       localStorage.setItem('activeThreadId', action.payload);
     },
+    clearThreads: (state) => {
+      state.threads = [];
+      state.activeThreadId = null;
+      localStorage.removeItem('activeThreadId');
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -116,5 +121,5 @@ const threadsSlice = createSlice({
   },
 });
 
-export const { setActiveThread } = threadsSlice.actions;
+export const { setActiveThread, clearThreads } = threadsSlice.actions;
 export default threadsSlice.reducer;  

@@ -86,6 +86,11 @@ const chatSlice = createSlice({
         state.typingStatusByThread[threadId] = isTyping;
       }
     },
+    clearMessages: (state) => {
+      state.messagesByThread = {};
+      state.typingStatusByThread = {};
+      state.loadingStatusByThread = {};
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -108,5 +113,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { addMessage, setTyping } = chatSlice.actions;
+export const { addMessage, setTyping, clearMessages } = chatSlice.actions;
 export default chatSlice.reducer;

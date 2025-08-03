@@ -55,7 +55,7 @@ function ChatWindow() {
           <MessageItem key={m.id} text={m.text} role={m.role} />
         ))}
         {isBotTyping && (
-          <div className="flex items-center space-x-2 py-4 px-3">
+          <div className="flex items-center px-3 py-4 space-x-2">
             <PulseLoader color="white" size={6} />
           </div>
         )}

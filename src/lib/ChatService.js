@@ -113,7 +113,7 @@ export const ChatService = {
         title: 'Новий чат',
         createdAt: serverTimestamp(),
       });
-      console.log('Новий чат створено з ID: ', docRef.id);
+  
       return docRef.id;
     } catch (error) {
       console.error('Помилка створення нового чату:', error);
@@ -125,7 +125,7 @@ export const ChatService = {
     if (!userId) return [];
 
     try {
-      console.log('getChatsForUser: userId =', userId);
+    
       const chatsCollectionRef = collection(db, 'chats');
       const q = query(chatsCollectionRef, where('userId', '==', userId), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -138,7 +138,7 @@ export const ChatService = {
           createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
         };
       });
-      console.log('getChatsForUser: chats =', chats);
+  
 
       return chats;
     } catch (error) {
@@ -151,7 +151,7 @@ export const ChatService = {
     try {
       const chatDocRef = doc(db, 'chats', chatId);
       await deleteDoc(chatDocRef);
-      console.log('Чат успішно видалено з Firestore');
+  
     } catch (error) {
       console.error('Помилка видалення чату з Firestore:', error);
       throw error;

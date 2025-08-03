@@ -44,8 +44,8 @@ export const signInWithEmail = async (email, password) => {
 export const signOutUser = async () => {
   try {
     await signOut(auth);
-    console.log('Користувач вийшов з системи');
   } catch (error) {
     console.error('Помилка виходу:', error.message);
+    throw error;
   }
 };
