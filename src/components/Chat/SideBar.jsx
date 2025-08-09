@@ -7,8 +7,8 @@ import { clearUser } from '@/features/slices/authSlice';
 import { clearThreads } from '@/features/slices/threadsSlice';
 import { clearMessages } from '@/features/slices/chatSlice';
 import Button from '@/components/common/Button';
-import Header from '@components/Сhat/Header';
-import ChatList from '@components/Сhat/ChatList';
+import Header from './Header';
+import ChatList from './ChatList';
 import { signOutUser } from '@lib/auth';
 import AuroraAvatar from '../../assets/aurora128_enhanced.png';
 
