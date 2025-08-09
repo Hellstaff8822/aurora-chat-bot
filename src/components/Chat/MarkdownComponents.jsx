@@ -6,7 +6,7 @@ export const markdownComponents = {
   h2: ({ children }) => <h2 className="mb-2 text-lg font-bold text-white md:mb-3 md:text-xl">{children}</h2>,
   h3: ({ children }) => <h3 className="mb-2 text-base font-bold text-white md:text-lg">{children}</h3>,
   h4: ({ children }) => <h4 className="mb-2 text-sm font-bold text-white md:text-base">{children}</h4>,
-  p: ({ children }) => <p className="mb-3 text-sm leading-relaxed text-white md:mb-4 md:text-base">{children}</p>,
+  p: ({ children }) => <p className="text-sm leading-relaxed text-white md:text-base">{children}</p>,
   ul: ({ children }) => <ul className="pl-4 mb-3 space-y-1 list-disc text-white md:pl-6 md:mb-4 md:space-y-2">{children}</ul>,
   ol: ({ children }) => <ol className="pl-4 mb-3 space-y-1 list-decimal text-white md:pl-6 md:mb-4 md:space-y-2">{children}</ol>,
   li: ({ children }) => <li className="text-sm leading-relaxed text-white md:text-base">{children}</li>,
