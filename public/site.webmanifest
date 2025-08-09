@@ -1,0 +1,29 @@
+{
+  "name": "Aurora AI Assistant",
+  "short_name": "Aurora",
+  "description": "Сучасний AI асистент для спілкування з підтримкою української та англійської мов",
+  "icons": [
+    {
+      "src": "/aurora-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/aurora-250.png",
+      "sizes": "250x250",
+      "type": "image/png"
+    },
+    {
+      "src": "/aurora-300.png",
+      "sizes": "300x300",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#7c3aed",
+  "background_color": "#0f172a",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "utilities", "education"]
+} 
