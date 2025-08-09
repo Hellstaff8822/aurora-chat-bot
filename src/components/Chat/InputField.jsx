@@ -89,7 +89,6 @@ function InputField() {
   }, []);
 
   useEffect(() => {
-    // оновлюємо змінну при зміні тексту (інпут авто-росте)
     const el = containerRef.current;
     if (!el) return;
     document.documentElement.style.setProperty('--input-height', `${el.offsetHeight || 0}px`);
@@ -97,25 +96,25 @@ function InputField() {
 
   return (
     <div ref={containerRef} className="fixed right-0 bottom-0 left-0 z-30 py-3 h-auto lg:left-80 xl:left-80">
-      <div className="flex justify-center px-4 mx-auto max-w-3xl">
-        <div className="w-full bg-[#0F172A] border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-center gap-2 shadow-xl p-3 mb-4 rounded-2xl">
+      <div className="flex justify-center px-3 mx-auto max-w-3xl md:px-4">
+        <div className="w-full bg-[#0F172A] border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-center gap-2 shadow-xl p-2.5 md:p-3 mb-4 rounded-2xl">
           <textarea
             ref={textareaRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Напишіть повідомлення..."
-            className="flex-1 px-4 py-3 max-h-48 text-base placeholder-gray-400 text-gray-100 bg-transparent rounded-md outline-none resize-none sidebar-scroll"
+            className="flex-1 px-3 md:px-4 py-2.5 md:py-3 max-h-48 text-sm md:text-base placeholder-gray-400 text-gray-100 bg-transparent rounded-md outline-none resize-none sidebar-scroll"
             rows="1"
             onKeyDown={handleKeyDown}
             disabled={isBotTyping}
           />
           <button
             type="button"
-            className="flex-shrink-0 p-2.5 ml-2 bg-blue-600 rounded-full transition-colors cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-shrink-0 p-2 md:p-2.5 ml-1.5 md:ml-2 bg-blue-600 rounded-full transition-colors cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isBotTyping || !text.trim()}
             onClick={handleSendMessage}
           >
-            <SendHorizontal className="w-5 h-5 text-white" />
+            <SendHorizontal className="w-4 h-4 text-white md:w-5 md:h-5" />
           </button>
         </div>
       </div>
