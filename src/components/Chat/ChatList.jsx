@@ -25,7 +25,7 @@ function ChatList() {
       {threads.map((thread) => (
         <li
           key={thread.id}
-          className={`relative mx-3 mb-2 px-4 py-3 cursor-pointer rounded-lg transition-all duration-200 h-12 flex items-center ${
+          className={`relative mb-2 px-4 cursor-pointer rounded-lg transition-all duration-200 h-12 flex items-center ${
             thread.id === activeThreadId 
               ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-medium shadow-lg border border-purple-500/30' 
               : 'hover:bg-[#2a3145] hover:border-[#3a445f]/50 border border-transparent text-gray-200'

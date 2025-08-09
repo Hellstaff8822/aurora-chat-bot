@@ -8,15 +8,21 @@ function SpotlightCard({ children, className = '' }) {
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (cardRef.current && isHovered) {
-        const rect = cardRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        setMousePosition({ x, y });
+        try {
+          const rect = cardRef.current.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          setMousePosition({ x, y });
+        } catch (error) {
+          console.error('Помилка обробки mouse move:', error);
+        }
       }
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
+    if (isHovered) {
+      document.addEventListener('mousemove', handleMouseMove);
+      return () => document.removeEventListener('mousemove', handleMouseMove);
+    }
   }, [isHovered]);
 
   return (

@@ -9,7 +9,7 @@ import markdownComponents from './MarkdownComponents';
 const MessageItem = memo(({ text, role }) => {
   const isBot = role === 'bot';
 
-  const wrapperClass = isBot ? 'flex items-start gap-3' : 'flex items-start gap-3 flex-row-reverse mb-7 mt-7';
+  const wrapperClass = isBot ? 'flex items-start gap-3 mb-8' : 'flex items-start gap-3 flex-row-reverse mb-8';
   const userBubbleClass = 'bg-blue-600/30 border border-blue-500/30';
   const botBubbleClass = 'bg-purple-600/30 border border-purple-500/30';
 

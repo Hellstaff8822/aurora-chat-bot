@@ -16,6 +16,7 @@ function InputField() {
   );
 
   const textareaRef = useRef(null);
+  const containerRef = useRef(null);
 
   const handleSendMessage = async () => {
     const userText = text.trim();
@@ -28,8 +29,10 @@ function InputField() {
         alert('Будь ласка, увійдіть, щоб почати чат.');
         return;
       }
+      
       try {
         const resultAction = await dispatch(createThread(user.uid));
+        
         if (createThread.fulfilled.match(resultAction)) {
           threadId = resultAction.payload.id;
           dispatch(setActiveThread(threadId));
@@ -69,10 +72,33 @@ function InputField() {
     }
   }, [text]);
 
+  useEffect(() => {
+    const updateInputHeightVar = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const height = el.offsetHeight || 0;
+      document.documentElement.style.setProperty('--input-height', `${height}px`);
+    };
+
+    updateInputHeightVar();
+    window.addEventListener('resize', updateInputHeightVar);
+
+    return () => {
+      window.removeEventListener('resize', updateInputHeightVar);
+    };
+  }, []);
+
+  useEffect(() => {
+    // оновлюємо змінну при зміні тексту (інпут авто-росте)
+    const el = containerRef.current;
+    if (!el) return;
+    document.documentElement.style.setProperty('--input-height', `${el.offsetHeight || 0}px`);
+  }, [text, isBotTyping]);
+
   return (
-    <div className="fixed right-0 bottom-0 left-64 z-10 py-3 h-auto">
-      <div className="flex justify-center mx-auto max-w-3xl">
-        <div className="w-full bg-[#0F172A]/60 backdrop-blur-lg border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-end gap-2 shadow-md p-3 mb-4 rounded-2xl">
+    <div ref={containerRef} className="fixed right-0 bottom-0 left-0 z-30 py-3 h-auto lg:left-80 xl:left-80">
+      <div className="flex justify-center px-4 mx-auto max-w-3xl">
+        <div className="w-full bg-[#0F172A] border-t border-[#2A3248]/50 max-w-3xl mx-auto flex items-center gap-2 shadow-xl p-3 mb-4 rounded-2xl">
           <textarea
             ref={textareaRef}
             value={text}
@@ -85,7 +111,7 @@ function InputField() {
           />
           <button
             type="button"
-            className="self-end p-2 ml-2 bg-blue-600 rounded-full transition-colors cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-shrink-0 p-2.5 ml-2 bg-blue-600 rounded-full transition-colors cursor-pointer hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isBotTyping || !text.trim()}
             onClick={handleSendMessage}
           >

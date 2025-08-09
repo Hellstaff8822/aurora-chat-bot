@@ -19,34 +19,32 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
 export const ChatService = {
   async getBotResponse(messagesArr) {
     try {
-      const systemPrompt = `Ти — Aurora, сучасний інтелектуальний асистент. 
+      const lastUserMessageText = Array.isArray(messagesArr)
+        ? [...messagesArr].reverse().find((m) => m?.role === 'user' && m?.parts?.[0]?.text)?.parts?.[0]?.text || ''
+        : '';
+      const hasCyrillic = /[\u0400-\u04FF]/.test(lastUserMessageText);
+      const hasLatin = /[A-Za-z]/.test(lastUserMessageText);
+      const replyLanguage = hasLatin && !hasCyrillic ? 'English' : 'Ukrainian';
 
-ІНСТРУКЦІЇ:
-1. Відповідай українською мовою
-2. Використовуй Markdown для структурування:
-   - Заголовки: ## Заголовок (для основних розділів)
-   - Підзаголовки: ### Підзаголовок (для підрозділів)
-   - Списки: - пункт (для маркованих списків)
-   - Нумеровані списки: 1. пункт (для покрокових інструкцій)
-   - Жирний текст: **важливий текст**
-   - Курсив: *пояснення*
-   - Код: \`фрагмент коду\` (для коротких прикладів)
-   - Код блоки: \`\`\`javascript\nкод\n\`\`\` (для довгих прикладів)
-3. Додавай релевантні емодзі до тексту там, де доречно
-4. Структуруй відповіді з заголовками та списками для кращої читабельності
+      const systemPrompt = `You are Aurora, a modern, helpful assistant.
 
-Приклад форматування:
-## Рецепт курячого супу 🍲
+LANGUAGE:
+- Always reply in the same language as the user's last message. Current language: ${replyLanguage}.
+- Keep a gender‑neutral tone.
 
-**Інгредієнти:**
-- 1 кг курячих стегон 🍗
-- 2 морквини 🥕
-- 2 картоплини 🥔
+FORMATTING (Markdown):
+- Use headings: ## Title, ### Subtitle
+- Lists: - item, 1. step
+- Bold: **important**, Italic: *note*
+- Inline code: \`code\`, Code blocks: \`\`\`javascript\ncode\n\`\`\`
+- Insert horizontal rules (---) to separate major sections or steps.
 
-**Інструкції:**
-1. Підготуйте курятину 🍗
-2. Варіть бульйон
-3. Додайте овочі 🥕🥔`;
+EMOJIS:
+- Add relevant emojis to headings or bullet points when they improve clarity or friendliness.
+- Do not overuse emojis; keep them tasteful and helpful.
+
+STYLE:
+- Be friendly and professional. Keep answers structured and concise.`;
 
       if (!messagesArr || messagesArr.length === 0) {
         throw new Error('Немає повідомлень для запиту.');
@@ -92,14 +90,30 @@ export const ChatService = {
     if (!firstMessageText || typeof firstMessageText !== 'string' || firstMessageText.trim() === '') {
       return 'Новий чат';
     }
-    const prompt = `Дай коротку, змістовну назву на основі цього повідомлення: "${firstMessageText}". Без лапок. До 5 слів.`;
+    
+    // Визначаємо мову повідомлення
+    const hasCyrillic = /[\u0400-\u04FF]/.test(firstMessageText);
+    const hasLatin = /[A-Za-z]/.test(firstMessageText);
+    const isEnglish = hasLatin && !hasCyrillic;
+    
+    const prompt = isEnglish 
+      ? `Generate a short, meaningful title based on this message: "${firstMessageText}". No quotes. Up to 5 words. Reply in English.`
+      : `Дай коротку, змістовну назву на основі цього повідомлення: "${firstMessageText}". Без лапок. До 5 слів.`;
+      
     try {
       const result = await model.generateContent(prompt);
       const response = result.response;
-      return response.text().trim() || 'Назва чату';
+      const title = response.text().trim();
+      
+      // Якщо назва не згенерувалась, повертаємо дефолтну назву відповідною мовою
+      if (!title) {
+        return isEnglish ? 'New Chat' : 'Назва чату';
+      }
+      
+      return title;
     } catch (error) {
       console.error('❌ Помилка генерації заголовку:', error);
-      return 'Назва чату';
+      return isEnglish ? 'New Chat' : 'Назва чату';
     }
   },
 
@@ -107,13 +121,14 @@ export const ChatService = {
     if (!userId) {
       throw new Error("ID користувача є обов'язковим для створення чату.");
     }
+    
     try {
       const docRef = await addDoc(collection(db, 'chats'), {
         userId: userId,
         title: 'Новий чат',
         createdAt: serverTimestamp(),
       });
-  
+      
       return docRef.id;
     } catch (error) {
       console.error('Помилка створення нового чату:', error);

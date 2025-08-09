@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Plus } from 'lucide-react';
+import { LogOut, Menu, X, MessageSquare } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { createThread } from '@/features/slices/threadsSlice';
 import { clearUser } from '@/features/slices/authSlice';
 import { clearThreads } from '@/features/slices/threadsSlice';
@@ -11,16 +12,29 @@ import ChatList from '@components/chat/ChatList';
 import { signOutUser } from '@lib/auth';
 import AuroraAvatar from '../../assets/aurora128_enhanced.png';
 
-function Sidebar() {
+function Sidebar({ isOpen = true, onToggle }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleNewChat = () => {
     if (!user) {
       alert('Будь ласка, увійдіть в акаунт, щоб створити новий чат.');
       return;
     }
+
     dispatch(createThread(user.uid));
   };
 
@@ -37,53 +51,83 @@ function Sidebar() {
   };
 
   return (
-    <aside className="w-80 h-full flex flex-col overflow-y-auto bg-gradient-to-b from-[#1a2131] to-[#0f172a] text-gray-200 border-r border-[#2a3145]">
-      <Link to="/">
-        <Header />
-      </Link>
-      <div className="p-4 border-b border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
-        <button
-          onClick={handleNewChat}
-          className="text-white bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 hover:from-purple-700 hover:via-purple-800 hover:to-indigo-800 font-medium rounded-lg text-sm px-4 py-3 w-full h-12 flex items-center justify-start gap-2 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-[0_8px_25px_rgba(147,51,234,0.4)] border border-purple-400/20"
-        >
-          <Plus className="w-5 h-5" />
-          New Chat
-        </button>
-      </div>
-      <ChatList />
+    <>
+      {isMobile && isOpen && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onToggle} />}
 
-      {user && (
-        <div className="p-4 border-t border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
-          <div className="flex gap-2 justify-between items-center">
-            <div className="flex gap-3 items-center">
-              {user.photoURL ? (
-                <img
-                  src={user.photoURL}
-                  alt="User Avatar"
-                  className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145]"
-                />
-              ) : (
-                <img
-                  src={AuroraAvatar}
-                  alt="Default Avatar"
-                  className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145] bg-[#3a445f] p-1"
-                />
-              )}
-              <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.email}>
-                {user.nickname || user.email}
-              </div>
-            </div>
+      <aside
+        className={`
+        fixed lg:relative top-0 left-0 h-full flex flex-col overflow-y-auto bg-gradient-to-b from-[#1a2131] to-[#0f172a] text-gray-200 border-r border-[#2a3145] z-50
+        transition-all duration-300 ease-in-out
+        ${isMobile ? `w-80 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}` : 'w-80'}
+      `}
+      >
+        {isMobile && (
+          <div className="flex items-center justify-between p-4 border-b border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
+            <Link to="/" className="flex-1">
+              <Header />
+            </Link>
             <button
-              onClick={handleLogout}
-              title="Вийти"
-              className="relative z-50 p-2 text-sm font-medium text-gray-300 bg-[#2a3145] rounded-lg hover:bg-[#3a445f] hover:text-white hover:transform hover:scale-105 hover:shadow-lg transition-all duration-300 border border-[#3a445f]/50 hover:border-purple-500/50"
+              onClick={onToggle}
+              className="p-2 text-gray-400 hover:text-white hover:bg-[#2a3145] rounded-lg transition-colors"
             >
-              <LogOut className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
+        )}
+
+        {!isMobile && (
+          <Link to="/">
+            <Header />
+          </Link>
+        )}
+
+        <div className="px-3 py-2 border-b border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
+          <button
+            onClick={handleNewChat}
+            className="flex relative gap-2 items-center cursor-pointer px-4 w-full h-12 text-sm font-medium text-left
+text-gray-200 bg-[#2a3145]/80 backdrop-blur-[2px] rounded-lg border border-[#3a445f]/50
+transition-colors duration-200 hover:bg-[#2a3145]"
+          >
+            <MessageSquare className="w-4 h-4 text-gray-200" />
+            <span className="text-sm font-medium truncate">New Chat</span>
+          </button>
         </div>
-      )}
-    </aside>
+
+        <ChatList />
+
+        {user && (
+          <div className="p-4 border-t border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
+            <div className="flex gap-2 justify-between items-center">
+              <div className="flex gap-3 items-center">
+                {user.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt="User Avatar"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145]"
+                  />
+                ) : (
+                  <img
+                    src={AuroraAvatar}
+                    alt="Default Avatar"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145] bg-[#3a445f] p-1"
+                  />
+                )}
+                <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.email}>
+                  {user.nickname || user.email}
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                title="Вийти"
+                className="relative z-50 p-2 text-sm font-medium text-gray-300 bg-[#2a3145] rounded-lg hover:bg-[#3a445f] hover:text-white hover:transform hover:scale-105 hover:shadow-lg transition-all duration-300 border border-[#3a445f]/50 hover:border-purple-500/50"
+              >
+                <LogOut className="w-5 h-5 cursor-pointer" />
+              </button>
+            </div>
+          </div>
+        )}
+      </aside>
+    </>
   );
 }
 

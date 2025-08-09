@@ -49,17 +49,17 @@ function ChatWindow() {
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] overflow-y-auto pt-6 bg-[#0F172A] sidebar-scroll">
-      <div className="w-full max-w-3xl mx-auto px-4 pb-[104px]">
+    <div className="h-[calc(100vh-144px)] lg:h-[calc(100vh-80px)] xl:h-[calc(100vh-80px)] overflow-y-auto pt-12 bg-[#0F172A] sidebar-scroll">
+      <div className="px-6 mx-auto w-full max-w-3xl" style={{ paddingBottom: 'calc(var(--input-height, 80px) + 32px)' }}>
         {messages.map((m) => (
           <MessageItem key={m.id} text={m.text} role={m.role} />
         ))}
         {isBotTyping && (
-          <div className="flex items-center px-3 py-4 space-x-2">
+          <div className="flex items-center px-3 py-4 mb-8 space-x-2">
             <PulseLoader color="white" size={6} />
           </div>
         )}
-        <div ref={endRef} />
+        <div ref={endRef} className="mb-8" />
       </div>
     </div>
   );
