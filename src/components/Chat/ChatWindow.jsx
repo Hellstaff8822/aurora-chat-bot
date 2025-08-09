@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import WelcomeScreen from './WelcomeScreen';
-import MessageItem from '@components/chat/MessageItem';
+import MessageItem from '@components/Сhat/MessageItem';
 import { useSelector, useDispatch } from 'react-redux';
 import { PulseLoader } from 'react-spinners';
 import { useChatMessages } from '@/hooks/useChatMessages';
