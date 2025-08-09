@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, X, MessageSquare } from 'lucide-react';
+import { LogOut, Menu, X, MessageSquare, UserCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createThread } from '@/features/slices/threadsSlice';
 import { clearUser } from '@/features/slices/authSlice';
@@ -10,7 +10,6 @@ import Button from '@/components/common/Button';
 import Header from './Header';
 import ChatList from './ChatList';
 import { signOutUser } from '@lib/auth';
-import AuroraAvatar from '../../assets/aurora128_enhanced.png';
 import { useToast } from '@/hooks/useToast';
 
 function Sidebar({ isOpen = true, onToggle }) {
@@ -110,11 +109,7 @@ transition-colors duration-200 hover:bg-[#2a3145]"
                     className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145]"
                   />
                 ) : (
-                  <img
-                    src={AuroraAvatar}
-                    alt="Default Avatar"
-                    className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145] bg-[#3a445f] p-1"
-                  />
+                  <UserCircle className="w-7 h-7 text-gray-200" />
                 )}
                 <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.email}>
                   {user.nickname || user.email}

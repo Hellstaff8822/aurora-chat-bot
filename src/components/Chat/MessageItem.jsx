@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { User } from 'lucide-react';
+import { UserRound } from 'lucide-react';
 import BotAvatar from '../../assets/aurora128_enhanced.png';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -21,7 +21,7 @@ const MessageItem = memo(({ text, role }) => {
         </div>
       ) : (
         <div className={`flex flex-shrink-0 justify-center items-center w-7 h-7 rounded-full md:w-8 md:h-8 ${userBubbleClass}`}>
-          <User className="w-4 h-4 text-white md:w-5 md:h-5" />
+          <UserRound className="w-4 h-4 text-white md:w-5 md:h-5" />
         </div>
       )}
 
