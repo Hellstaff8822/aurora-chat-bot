@@ -17,19 +17,15 @@ export const markdownComponents = {
   code({ inline, className, children }) {
     const match = /language-(\w+)/.exec(className || '');
     const codeString = Array.isArray(children) ? children.join('') : String(children);
-    
+
     if (inline && !className) {
       return <span className="text-white">{codeString}</span>;
     }
-    
+
     if (inline) {
-      return (
-        <code className="px-1.5 py-0.5 font-mono text-sm text-green-400 bg-gray-900 rounded">
-          {codeString}
-        </code>
-      );
+      return <code className="px-1.5 py-0.5 font-mono text-sm text-green-400 bg-gray-900 rounded">{codeString}</code>;
     }
-    
+
     return (
       <div className="overflow-hidden my-4 bg-gray-900 rounded-lg border border-gray-600">
         <SyntaxHighlighter
@@ -47,7 +43,7 @@ export const markdownComponents = {
           codeTagProps={{
             style: {
               background: 'transparent',
-            }
+            },
           }}
         >
           {codeString}

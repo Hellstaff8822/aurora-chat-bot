@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { setUser } from '@features/authSlice';
 import { signInWithGoogle } from '@lib/auth';
 import GoogleLogo from '../../assets/icons/google.svg';
+import { useState } from 'react';
+import { ClipLoader } from 'react-spinners';
+import { useToast } from '@/hooks/useToast';
 
 const baseStyles = "flex items-center w-full p-2 text-sm font-medium rounded-md transition-colors cursor-pointer";
 
@@ -34,27 +37,34 @@ export default function Button({
 export function GoogleSignInButton() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { error, success } = useToast();
 
   const handleGoogleSignIn = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
     try {
       const result = await signInWithGoogle();
-      if (result.user) {
-        dispatch(
-          setUser({
-            email: result.user.email,
-            uid: result.user.uid,
-            nickname: result.user.displayName || result.user.email,
-            photoURL: result.user.photoURL,
-          }),
-        );
+      
+      if (result.success && result.user) {
+        dispatch(setUser({
+          email: result.user.email,
+          uid: result.user.uid,
+          nickname: result.user.displayName || result.user.email,
+          photoURL: result.user.photoURL,
+        }));
+        success('Успішний вхід через Google!');
         navigate('/');
-      } else if (result.error) {
+      } else {
         console.error('Помилка Google входу:', result.error);
-        alert(`Помилка входу через Google: ${result.error}`);
+        error(`Помилка входу через Google: ${result.error}`);
       }
     } catch (error) {
       console.error('Помилка Google входу:', error);
-      alert('Сталася помилка при вході через Google');
+      error('Сталася помилка при вході через Google');
+    } finally {
+      setIsLoading(false);
     }
   };
 

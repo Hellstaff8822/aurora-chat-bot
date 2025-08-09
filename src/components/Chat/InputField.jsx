@@ -4,6 +4,7 @@ import { sendMessage } from '@features/chatSlice';
 import { useRef, useState, useEffect } from 'react';
 import { useActiveThread } from '@hooks/useActiveThread';
 import { SendHorizontal } from 'lucide-react';
+import { useToast } from '@hooks/useToast';
 
 function InputField() {
   const dispatch = useDispatch();
@@ -17,19 +18,19 @@ function InputField() {
 
   const textareaRef = useRef(null);
   const containerRef = useRef(null);
+  const { error } = useToast();
 
   const handleSendMessage = async () => {
-    const userText = text.trim();
-    if (!userText || isBotTyping) return;
+    if (!text.trim()) return;
+
+    if (!user) {
+      error('Будь ласка, увійдіть, щоб почати чат.');
+      return;
+    }
 
     let threadId = activeThreadId;
 
     if (!threadId) {
-      if (!user) {
-        alert('Будь ласка, увійдіть, щоб почати чат.');
-        return;
-      }
-      
       try {
         const resultAction = await dispatch(createThread(user.uid));
         
@@ -37,17 +38,17 @@ function InputField() {
           threadId = resultAction.payload.id;
           dispatch(setActiveThread(threadId));
         } else {
-          alert('Не вдалося створити чат!');
+          error('Не вдалося створити чат!');
           return;
         }
       } catch (error) {
         console.error('Не вдалося створити чат:', error);
-        alert('Сталася помилка при створенні чату.');
+        error('Сталася помилка при створенні чату.');
         return;
       }
     }
 
-    dispatch(sendMessage({ userText, threadId }));
+    dispatch(sendMessage({ userText: text.trim(), threadId }));
     setText('');
   };
 

@@ -9,10 +9,13 @@ import { fetchMessagesForThread } from '@/features/slices/chatSlice';
 
 import { Chat, Login } from '@/pages';
 import { ProtectedRoute } from '@/components';
+import { useToast } from '@/hooks/useToast';
+import ToastContainer from '@/components/common/ToastContainer';
 
 function App() {
   const dispatch = useDispatch();
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const { toasts, removeToast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -63,6 +66,7 @@ function App() {
         </Route>
         <Route path="login" element={<Login />} />
       </Routes>
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </Router>
   );
 }

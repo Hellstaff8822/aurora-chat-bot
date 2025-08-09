@@ -11,12 +11,14 @@ import Header from './Header';
 import ChatList from './ChatList';
 import { signOutUser } from '@lib/auth';
 import AuroraAvatar from '../../assets/aurora128_enhanced.png';
+import { useToast } from '@/hooks/useToast';
 
 function Sidebar({ isOpen = true, onToggle }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
   const [isMobile, setIsMobile] = useState(false);
+  const { error, success } = useToast();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -31,7 +33,7 @@ function Sidebar({ isOpen = true, onToggle }) {
 
   const handleNewChat = () => {
     if (!user) {
-      alert('Будь ласка, увійдіть в акаунт, щоб створити новий чат.');
+      error('Будь ласка, увійдіть в акаунт, щоб створити новий чат.');
       return;
     }
 
@@ -44,9 +46,11 @@ function Sidebar({ isOpen = true, onToggle }) {
       dispatch(clearUser());
       dispatch(clearThreads());
       dispatch(clearMessages());
+      success('Ви успішно вийшли з акаунту');
       navigate('/login');
     } catch (error) {
       console.error('Помилка при виході:', error);
+      error('Помилка при виході з акаунту');
     }
   };
 
