@@ -32,7 +32,6 @@ function Chat() {
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
       
       <div className="flex relative flex-col flex-1">
-        {/* Mobile header with menu button */}
         {isMobile && (
           <div className="flex items-center justify-between p-4 border-b border-[#2a3145] bg-[#1a2131] lg:hidden">
             <button
@@ -42,7 +41,7 @@ function Chat() {
               <Menu className="w-5 h-5" />
             </button>
             <h1 className="text-lg font-semibold text-white">Aurora</h1>
-            <div className="w-9"></div> {/* Spacer for centering */}
+            <div className="w-9"></div>
           </div>
         )}
         

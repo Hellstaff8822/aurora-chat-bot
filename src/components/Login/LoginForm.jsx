@@ -143,14 +143,14 @@ function LoginForm({ isLoginMode }) {
 
       <div>
         <div className="relative">
-          <input
-            id="password"
-            name="password"
+        <input
+          id="password"
+          name="password"
             type={showPassword ? "text" : "password"}
-            placeholder="Пароль"
-            {...formik.getFieldProps('password')}
+          placeholder="Пароль"
+          {...formik.getFieldProps('password')}
             className="px-4 py-2 pr-10 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}

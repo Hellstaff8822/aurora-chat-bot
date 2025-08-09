@@ -1,16 +1,16 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, X, MessageSquare, UserCircle } from 'lucide-react';
+import { LogOut, Menu, X, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { createThread } from '@/features/slices/threadsSlice';
 import { clearUser } from '@/features/slices/authSlice';
 import { clearThreads } from '@/features/slices/threadsSlice';
 import { clearMessages } from '@/features/slices/chatSlice';
-import Button from '@/components/common/Button';
 import Header from './Header';
 import ChatList from './ChatList';
 import { signOutUser } from '@lib/auth';
 import { useToast } from '@/hooks/useToast';
+import { Avatar } from '@mui/material';
 
 function Sidebar({ isOpen = true, onToggle }) {
   const dispatch = useDispatch();
@@ -102,15 +102,19 @@ transition-colors duration-200 hover:bg-[#2a3145]"
           <div className="p-4 border-t border-[#1E2536] bg-gradient-to-r from-[#1E2536]/50 to-transparent">
             <div className="flex gap-2 justify-between items-center">
               <div className="flex gap-3 items-center">
-                {user.photoURL ? (
-                  <img
-                    src={user.photoURL}
-                    alt="User Avatar"
-                    className="w-10 h-10 rounded-full object-cover border-2 border-[#2a3145]"
-                  />
-                ) : (
-                  <UserCircle className="w-7 h-7 text-gray-200" />
-                )}
+                <Avatar 
+                  src={user.photoURL}
+                  alt={user.nickname || user.email}
+                  sx={{ 
+                    width: 40, 
+                    height: 40,
+                    bgcolor: '#2a3145',
+                    border: '2px solid #3a445f',
+                    color: '#d1d5db'
+                  }}
+                >
+                  {!user.photoURL && (user.nickname || user.email).split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                </Avatar>
                 <div className="text-base font-semibold truncate max-w-[100px]" title={user.nickname || user.email}>
                   {user.nickname || user.email}
                 </div>

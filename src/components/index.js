@@ -7,3 +7,4 @@ export { default as SpotlightCard } from './common/SpotlightCard';
 export { GoogleSignInButton } from './common/Button';
 export { default as Toast } from './common/Toast';
 export { default as ToastContainer } from './common/ToastContainer';
+export { default as Aurora } from './backgrounds/Aurora/Aurora';

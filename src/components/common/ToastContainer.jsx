@@ -16,7 +16,7 @@ const ToastContainer = ({ toasts, removeToast }) => {
             type={toast.type}
             isVisible={true}
             onClose={() => removeToast(toast.id)}
-            duration={0} // Контролюємо через useToast
+            duration={0} 
           />
         </div>
       ))}
