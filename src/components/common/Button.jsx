@@ -48,6 +48,11 @@ export function GoogleSignInButton() {
       const result = await signInWithGoogle();
       
       if (result.success && result.user) {
+        if (!result.user.email || !result.user.uid) {
+          error('Помилка: недостатньо даних користувача');
+          return;
+        }
+        
         dispatch(setUser({
           email: result.user.email,
           uid: result.user.uid,
@@ -57,11 +62,9 @@ export function GoogleSignInButton() {
         success('Успішний вхід через Google!');
         navigate('/');
       } else {
-        console.error('Помилка Google входу:', result.error);
         error(`Помилка входу через Google: ${result.error}`);
       }
     } catch (error) {
-      console.error('Помилка Google входу:', error);
       error('Сталася помилка при вході через Google');
     } finally {
       setIsLoading(false);
@@ -72,10 +75,15 @@ export function GoogleSignInButton() {
     <button
       onClick={handleGoogleSignIn}
       type="button"
-      className="google-button"
+      disabled={isLoading}
+      className="google-button flex items-center justify-center space-x-2 w-full p-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      <img className="w-6 h-6" src={GoogleLogo} alt="Google" />
-      Увійти через Google
+      {isLoading ? (
+        <ClipLoader size={16} color="#6B7280" />
+      ) : (
+        <img className="w-6 h-6" src={GoogleLogo} alt="Google" />
+      )}
+      <span>{isLoading ? 'Вхід...' : 'Увійти через Google'}</span>
     </button>
   );
 }

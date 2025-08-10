@@ -6,9 +6,9 @@ const ToastContainer = ({ toasts, removeToast }) => {
       {toasts.map((toast, index) => (
         <div
           key={toast.id}
-          style={{ 
+          style={{
             transform: `translateY(${index * 80}px)`,
-            zIndex: 100 - index
+            zIndex: 100 - index,
           }}
         >
           <Toast
@@ -16,7 +16,7 @@ const ToastContainer = ({ toasts, removeToast }) => {
             type={toast.type}
             isVisible={true}
             onClose={() => removeToast(toast.id)}
-            duration={0} 
+            duration={0}
           />
         </div>
       ))}
@@ -24,4 +24,4 @@ const ToastContainer = ({ toasts, removeToast }) => {
   );
 };
 
-export default ToastContainer; 
+export default ToastContainer;

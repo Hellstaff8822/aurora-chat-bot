@@ -16,10 +16,10 @@ function Chat() {
         setIsSidebarOpen(false);
       }
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -30,7 +30,7 @@ function Chat() {
   return (
     <div className="h-screen flex bg-[#0F172A] overflow-hidden">
       <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
-      
+
       <div className="flex relative flex-col flex-1">
         {isMobile && (
           <div className="flex items-center justify-between p-4 border-b border-[#2a3145] bg-[#1a2131] lg:hidden">
@@ -44,7 +44,7 @@ function Chat() {
             <div className="w-9"></div>
           </div>
         )}
-        
+
         <ChatWindow chatId={chatId} />
         <InputField chatId={chatId} />
       </div>

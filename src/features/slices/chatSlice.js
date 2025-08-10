@@ -20,9 +20,7 @@ export const sendMessage = createAsyncThunk(
         .then((title) => {
           dispatch(renameThreadAsync({ id: threadId, title }));
         })
-        .catch((err) => {
-          console.error('Помилка фонового перейменування чату:', err);
-        });
+        .catch(() => {});
     }
 
     dispatch(setTyping({ threadId, isTyping: true }));
@@ -49,20 +47,17 @@ export const sendMessage = createAsyncThunk(
     } finally {
       dispatch(setTyping({ threadId, isTyping: false }));
     }
-  }
+  },
 );
 
-export const fetchMessagesForThread = createAsyncThunk(
-  'chat/fetchMessages',
-  async (threadId, { rejectWithValue }) => {
-    try {
-      const messages = await ChatService.getMessagesForChat(threadId);
-      return { threadId, messages };
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const fetchMessagesForThread = createAsyncThunk('chat/fetchMessages', async (threadId, { rejectWithValue }) => {
+  try {
+    const messages = await ChatService.getMessagesForChat(threadId);
+    return { threadId, messages };
+  } catch (error) {
+    return rejectWithValue(error.message);
   }
-);
+});
 
 const chatSlice = createSlice({
   name: 'chat',

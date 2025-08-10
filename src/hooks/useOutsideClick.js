@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 
-
 export const useOutsideClick = (callback) => {
   const ref = useRef(null);
 

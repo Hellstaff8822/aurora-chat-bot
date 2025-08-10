@@ -7,29 +7,23 @@ const initialState = {
   isLoading: false,
 };
 
-export const fetchThreads = createAsyncThunk(
-  'threads/fetchThreads',
-  async (userId, { rejectWithValue }) => {
-    try {
-      const chats = await ChatService.getChatsForUser(userId);
-      return chats;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+export const fetchThreads = createAsyncThunk('threads/fetchThreads', async (userId, { rejectWithValue }) => {
+  try {
+    const chats = await ChatService.getChatsForUser(userId);
+    return chats;
+  } catch (err) {
+    return rejectWithValue(err.message);
   }
-);
+});
 
-export const createThread = createAsyncThunk(
-  'threads/createThread',
-  async (userId, { rejectWithValue }) => {
-    try {
-      const chatId = await ChatService.createNewChat(userId);
-      return { id: chatId, title: 'Новий чат', createdAt: new Date().toISOString() };
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
+export const createThread = createAsyncThunk('threads/createThread', async (userId, { rejectWithValue }) => {
+  try {
+    const chatId = await ChatService.createNewChat(userId);
+    return { id: chatId, title: 'Новий чат', createdAt: new Date().toISOString() };
+  } catch (err) {
+    return rejectWithValue(err.message);
   }
-);
+});
 
 export const renameThreadAsync = createAsyncThunk(
   'threads/renameThreadAsync',
@@ -40,20 +34,17 @@ export const renameThreadAsync = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message);
     }
-  }
+  },
 );
 
-export const deleteThread = createAsyncThunk(
-  'threads/deleteThread',
-  async (chatId, { rejectWithValue }) => {
-    try {
-      await ChatService.deleteChat(chatId);
-      return chatId;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+export const deleteThread = createAsyncThunk('threads/deleteThread', async (chatId, { rejectWithValue }) => {
+  try {
+    await ChatService.deleteChat(chatId);
+    return chatId;
+  } catch (error) {
+    return rejectWithValue(error.message);
   }
-);
+});
 
 const threadsSlice = createSlice({
   name: 'threads',
@@ -90,9 +81,8 @@ const threadsSlice = createSlice({
           localStorage.removeItem('activeThreadId');
         }
       })
-      .addCase(fetchThreads.rejected, (state, action) => {
+      .addCase(fetchThreads.rejected, (state) => {
         state.isLoading = false;
-        console.error('Помилка завантаження чатів:', action.payload);
       })
       .addCase(deleteThread.fulfilled, (state, action) => {
         const idToDelete = action.payload;
@@ -122,4 +112,4 @@ const threadsSlice = createSlice({
 });
 
 export const { setActiveThread, clearThreads } = threadsSlice.actions;
-export default threadsSlice.reducer;  
+export default threadsSlice.reducer;

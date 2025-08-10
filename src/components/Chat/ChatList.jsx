@@ -26,8 +26,8 @@ function ChatList() {
         <li
           key={thread.id}
           className={`relative mb-2 px-4 cursor-pointer rounded-lg transition-all duration-200 h-12 flex items-center ${
-            thread.id === activeThreadId 
-              ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-medium shadow-lg border border-purple-500/30' 
+            thread.id === activeThreadId
+              ? 'bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-medium shadow-lg border border-purple-500/30'
               : 'hover:bg-[#2a3145] hover:border-[#3a445f]/50 border border-transparent text-gray-200'
           }`}
           onClick={() => {
@@ -75,26 +75,26 @@ function ChatList() {
               className="absolute top-10 right-2 w-40 bg-gradient-to-b from-[#1a2131]/95 to-[#0f172a]/95 border border-[#3a445f]/50 rounded-lg shadow-2xl z-50 backdrop-blur-md"
               onClick={(e) => e.stopPropagation()}
             >
-                              <button
-                  className="flex items-center px-4 py-3 w-full text-sm text-left text-gray-200 cursor-pointer hover:bg-[#2a3145]/80 transition-all duration-200 rounded-t-lg hover:text-white"
-                  onClick={() => {
-                    setEditingThreadId(thread.id);
-                    setMenuOpenForId(null);
-                  }}
-                >
-                  <Pencil className="mr-3 w-4 h-4" />
-                  Редагувати
-                </button>
-                <button
-                  className="flex items-center px-4 py-3 w-full text-sm text-left text-red-400 cursor-pointer hover:bg-[#2a3145]/80 transition-all duration-200 rounded-b-lg hover:text-red-300"
-                  onClick={() => {
-                    dispatch(deleteThread(thread.id));
-                    setMenuOpenForId(null);
-                  }}
-                >
-                  <Trash2 className="mr-3 w-4 h-4" />
-                  Видалити
-                </button>
+              <button
+                className="flex items-center px-4 py-3 w-full text-sm text-left text-gray-200 cursor-pointer hover:bg-[#2a3145]/80 transition-all duration-200 rounded-t-lg hover:text-white"
+                onClick={() => {
+                  setEditingThreadId(thread.id);
+                  setMenuOpenForId(null);
+                }}
+              >
+                <Pencil className="mr-3 w-4 h-4" />
+                Редагувати
+              </button>
+              <button
+                className="flex items-center px-4 py-3 w-full text-sm text-left text-red-400 cursor-pointer hover:bg-[#2a3145]/80 transition-all duration-200 rounded-b-lg hover:text-red-300"
+                onClick={() => {
+                  dispatch(deleteThread(thread.id));
+                  setMenuOpenForId(null);
+                }}
+              >
+                <Trash2 className="mr-3 w-4 h-4" />
+                Видалити
+              </button>
             </div>
           )}
         </li>

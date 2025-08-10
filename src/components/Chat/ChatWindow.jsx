@@ -50,7 +50,10 @@ function ChatWindow() {
 
   return (
     <div className="h-[calc(100vh-144px)] lg:h-[calc(100vh-80px)] xl:h-[calc(100vh-80px)] overflow-y-auto pt-6 md:pt-12 bg-[#0F172A] sidebar-scroll">
-      <div className="px-4 mx-auto w-full max-w-3xl md:px-6" style={{ paddingBottom: 'calc(var(--input-height, 80px) + 32px)' }}>
+      <div
+        className="px-4 mx-auto w-full max-w-3xl md:px-6"
+        style={{ paddingBottom: 'calc(var(--input-height, 80px) + 32px)' }}
+      >
         {messages.map((m) => (
           <MessageItem key={m.id} text={m.text} role={m.role} />
         ))}

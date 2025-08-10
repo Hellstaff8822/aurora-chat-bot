@@ -80,8 +80,7 @@ STYLE:
 
       const response = result.response;
       return response.text();
-    } catch (err) {
-      console.error('Помилка запиту до Gemini:', err);
+    } catch {
       throw new Error('Не вдалося отримати відповідь від AI.');
     }
   },
@@ -90,29 +89,26 @@ STYLE:
     if (!firstMessageText || typeof firstMessageText !== 'string' || firstMessageText.trim() === '') {
       return 'Новий чат';
     }
-    
-    // Визначаємо мову повідомлення
+
     const hasCyrillic = /[\u0400-\u04FF]/.test(firstMessageText);
     const hasLatin = /[A-Za-z]/.test(firstMessageText);
     const isEnglish = hasLatin && !hasCyrillic;
-    
-    const prompt = isEnglish 
+
+    const prompt = isEnglish
       ? `Generate a short, meaningful title based on this message: "${firstMessageText}". No quotes. Up to 5 words. Reply in English.`
       : `Дай коротку, змістовну назву на основі цього повідомлення: "${firstMessageText}". Без лапок. До 5 слів.`;
-      
+
     try {
       const result = await model.generateContent(prompt);
       const response = result.response;
       const title = response.text().trim();
-      
-      // Якщо назва не згенерувалась, повертаємо дефолтну назву відповідною мовою
+
       if (!title) {
         return isEnglish ? 'New Chat' : 'Назва чату';
       }
-      
+
       return title;
-    } catch (error) {
-      console.error('❌ Помилка генерації заголовку:', error);
+    } catch {
       return isEnglish ? 'New Chat' : 'Назва чату';
     }
   },
@@ -121,26 +117,20 @@ STYLE:
     if (!userId) {
       throw new Error("ID користувача є обов'язковим для створення чату.");
     }
-    
-    try {
-      const docRef = await addDoc(collection(db, 'chats'), {
-        userId: userId,
-        title: 'Новий чат',
-        createdAt: serverTimestamp(),
-      });
-      
-      return docRef.id;
-    } catch (error) {
-      console.error('Помилка створення нового чату:', error);
-      throw error;
-    }
+
+    const docRef = await addDoc(collection(db, 'chats'), {
+      userId: userId,
+      title: 'Новий чат',
+      createdAt: serverTimestamp(),
+    });
+
+    return docRef.id;
   },
 
   async getChatsForUser(userId) {
     if (!userId) return [];
 
     try {
-    
       const chatsCollectionRef = collection(db, 'chats');
       const q = query(chatsCollectionRef, where('userId', '==', userId), orderBy('createdAt', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -153,39 +143,27 @@ STYLE:
           createdAt: data.createdAt ? data.createdAt.toDate().toISOString() : new Date().toISOString(),
         };
       });
-  
 
       return chats;
-    } catch (error) {
-      console.error('Помилка завантаження чатів:', error);
+    } catch {
       return [];
     }
   },
+
   async deleteChat(chatId) {
     if (!chatId) throw new Error("ID чату є обов'язковим.");
-    try {
-      const chatDocRef = doc(db, 'chats', chatId);
-      await deleteDoc(chatDocRef);
-  
-    } catch (error) {
-      console.error('Помилка видалення чату з Firestore:', error);
-      throw error;
-    }
+    const chatDocRef = doc(db, 'chats', chatId);
+    await deleteDoc(chatDocRef);
   },
 
   async addMessageToChat(chatId, messageData) {
     if (!chatId || !messageData) throw new Error("ID чату та дані повідомлення є обов'язковими.");
-    try {
-      const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
+    const messagesCollectionRef = collection(db, 'chats', chatId, 'messages');
 
-      await addDoc(messagesCollectionRef, {
-        ...messageData,
-        createdAt: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error('Помилка додавання повідомлення в Firestore:', error);
-      throw error;
-    }
+    await addDoc(messagesCollectionRef, {
+      ...messageData,
+      createdAt: serverTimestamp(),
+    });
   },
 
   async getMessagesForChat(chatId) {
@@ -205,19 +183,14 @@ STYLE:
       });
 
       return messages;
-    } catch (error) {
-      console.error('Помилка завантаження повідомлень:', error);
+    } catch {
       return [];
     }
   },
 
   async updateChatTitle(chatId, newTitle) {
     if (!chatId || !newTitle) return;
-    try {
-      const chatDocRef = doc(db, 'chats', chatId);
-      await updateDoc(chatDocRef, { title: newTitle });
-    } catch (error) {
-      console.error('Помилка оновлення назви чату:', error);
-    }
+    const chatDocRef = doc(db, 'chats', chatId);
+    await updateDoc(chatDocRef, { title: newTitle });
   },
 };

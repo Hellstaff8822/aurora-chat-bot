@@ -10,13 +10,15 @@ import {
 
 const googleProvider = new GoogleAuthProvider();
 
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    return { user: result.user };
+    return { success: true, user: result.user };
   } catch (error) {
-    console.error('Помилка входу через Google:', error.message);
-    return { error: error.message };
+    return { success: false, error: error.message };
   }
 };
 
@@ -26,9 +28,8 @@ export const signUpWithEmail = async (email, password, nickname) => {
     await updateProfile(result.user, { displayName: nickname });
     return { user: result.user };
   } catch (error) {
-    console.error('Помилка реєстрації:', error.message);
     let errorMessage = 'Невідома помилка';
-    
+
     switch (error.code) {
       case 'auth/email-already-in-use':
         errorMessage = 'Користувач з таким email вже існує';
@@ -45,7 +46,7 @@ export const signUpWithEmail = async (email, password, nickname) => {
       default:
         errorMessage = error.message;
     }
-    
+
     return { error: errorMessage };
   }
 };
@@ -55,9 +56,8 @@ export const signInWithEmail = async (email, password) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
     return { user: result.user };
   } catch (error) {
-    console.error('Помилка входу:', error.message);
     let errorMessage = 'Невідома помилка';
-    
+
     switch (error.code) {
       case 'auth/invalid-credential':
         errorMessage = 'Невірний email або пароль';
@@ -74,16 +74,11 @@ export const signInWithEmail = async (email, password) => {
       default:
         errorMessage = error.message;
     }
-    
+
     return { error: errorMessage };
   }
 };
 
 export const signOutUser = async () => {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error('Помилка виходу:', error.message);
-    throw error;
-  }
+  await signOut(auth);
 };

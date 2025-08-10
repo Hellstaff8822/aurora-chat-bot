@@ -9,10 +9,10 @@ export const createShortDescription = (text, maxLength = 25) => {
   if (text.length <= maxLength) {
     return text;
   }
-  
+
   const words = text.split(' ');
   let result = '';
-  
+
   for (let word of words) {
     if ((result + ' ' + word).length <= maxLength) {
       result += (result ? ' ' : '') + word;
@@ -20,6 +20,6 @@ export const createShortDescription = (text, maxLength = 25) => {
       break;
     }
   }
-  
+
   return result + (result.length < text.length ? '...' : '');
-}; 
+};

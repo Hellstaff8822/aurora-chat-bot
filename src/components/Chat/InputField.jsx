@@ -33,7 +33,7 @@ function InputField() {
     if (!threadId) {
       try {
         const resultAction = await dispatch(createThread(user.uid));
-        
+
         if (createThread.fulfilled.match(resultAction)) {
           threadId = resultAction.payload.id;
           dispatch(setActiveThread(threadId));
@@ -41,8 +41,7 @@ function InputField() {
           error('Не вдалося створити чат!');
           return;
         }
-      } catch (error) {
-        console.error('Не вдалося створити чат:', error);
+      } catch {
         error('Сталася помилка при створенні чату.');
         return;
       }

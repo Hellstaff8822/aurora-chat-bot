@@ -83,9 +83,9 @@ function LoginForm({ isLoginMode }) {
               setUser({
                 email: result.user.email,
                 uid: result.user.uid,
-                nickname: result.user.displayName || result.user.email, 
+                nickname: result.user.displayName || result.user.email,
                 photoURL: result.user.photoURL,
-              })
+              }),
             );
             navigate('/');
           }
@@ -101,7 +101,7 @@ function LoginForm({ isLoginMode }) {
                 uid: result.user.uid,
                 nickname: result.user.displayName || values.nickname,
                 photoURL: result.user.photoURL,
-              })
+              }),
             );
             navigate('/');
           }
@@ -143,14 +143,14 @@ function LoginForm({ isLoginMode }) {
 
       <div>
         <div className="relative">
-        <input
-          id="password"
-          name="password"
-            type={showPassword ? "text" : "password"}
-          placeholder="Пароль"
-          {...formik.getFieldProps('password')}
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Пароль"
+            {...formik.getFieldProps('password')}
             className="px-4 py-2 pr-10 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
@@ -174,18 +174,16 @@ function LoginForm({ isLoginMode }) {
         <div className="p-2 text-sm text-center text-green-400 rounded-md bg-green-900/20">{successMessage}</div>
       )}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="primary-button"
-      >
+      <button type="submit" disabled={isLoading} className="primary-button">
         {isLoading ? (
           <div className="flex justify-center items-center">
             <ClipLoader color="#ffffff" size={20} className="mr-3" />
             <span>Завантаження...</span>
           </div>
+        ) : isLoginMode ? (
+          'Увійти'
         ) : (
-          isLoginMode ? 'Увійти' : 'Зареєструватися'
+          'Зареєструватися'
         )}
       </button>
     </form>

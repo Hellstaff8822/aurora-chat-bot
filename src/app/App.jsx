@@ -20,10 +20,15 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        dispatch(setUser({ email: user.email, uid: user.uid, nickname: user.displayName || user.email, photoURL: user.photoURL }));
-
+        dispatch(
+          setUser({
+            email: user.email,
+            uid: user.uid,
+            nickname: user.displayName || user.email,
+            photoURL: user.photoURL,
+          }),
+        );
         const resultAction = await dispatch(fetchThreads(user.uid));
-
         if (fetchThreads.fulfilled.match(resultAction) && resultAction.payload.length > 0) {
           const firstThreadId = resultAction.payload[0].id;
           dispatch(fetchMessagesForThread(firstThreadId));
@@ -33,7 +38,6 @@ function App() {
       }
       setIsAuthChecked(true);
     });
-
     return () => unsubscribe();
   }, [dispatch]);
 
@@ -44,13 +48,19 @@ function App() {
           <h1 className="mb-8 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-indigo-500 animate-pulse">
             Aurora
           </h1>
-          
+
           <div className="flex justify-center items-center space-x-2">
             <span className="text-lg text-gray-300">Ініціалізація</span>
             <div className="flex space-x-1">
               <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 bg-purple-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              <div
+                className="w-2 h-2 bg-purple-600 rounded-full animate-bounce"
+                style={{ animationDelay: '0.2s' }}
+              ></div>
+              <div
+                className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce"
+                style={{ animationDelay: '0.4s' }}
+              ></div>
             </div>
           </div>
         </div>
