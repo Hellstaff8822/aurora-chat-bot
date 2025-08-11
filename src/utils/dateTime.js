@@ -26,7 +26,7 @@ export function isDateOrTimeQuestion(text) {
 }
 
 export function formatDateTimeReply(locale = 'uk-UA') {
-  const { date, time, tz } = getNowDateTime(locale);
-  return `Сьогодні ${date}. Зараз ${time} (${tz}).`;
+  const { date, time } = getNowDateTime(locale);
+  return `Сьогодні ${date}. Зараз ${time}.`;
 }
 
