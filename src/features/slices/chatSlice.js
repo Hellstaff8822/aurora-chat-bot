@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { nanoid } from 'nanoid';
 import { renameThreadAsync, deleteThread } from '@/features/slices/threadsSlice';
 import { ChatService } from '@/lib/ChatService';
+import { isDateOrTimeQuestion, formatDateTimeReply } from '@/utils/dateTime';
 
 const initialState = {
   messagesByThread: {},
@@ -28,6 +29,14 @@ export const sendMessage = createAsyncThunk(
     try {
       dispatch(addMessage({ text: userText, role: 'user', threadId }));
       await ChatService.addMessageToChat(threadId, { text: userText, role: 'user' });
+
+      // Локальна відповідь на питання про дату/час без звернення до AI
+      if (isDateOrTimeQuestion(userText)) {
+        const responseText = formatDateTimeReply('uk-UA');
+        dispatch(addMessage({ text: responseText, role: 'bot', threadId }));
+        await ChatService.addMessageToChat(threadId, { text: responseText, role: 'bot' });
+        return; // зупиняємося, не звертаємось до моделі
+      }
 
       const updatedMessages = getState().chat.messagesByThread[threadId];
       const geminiMsgs = updatedMessages.map((m) => ({

@@ -12,9 +12,10 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { getCurrentDateTimeForPrompt } from '@/utils/dateTime';
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 export const ChatService = {
   async getBotResponse(messagesArr) {
@@ -27,6 +28,8 @@ export const ChatService = {
       const replyLanguage = hasLatin && !hasCyrillic ? 'English' : 'Ukrainian';
 
       const systemPrompt = `You are Aurora, a modern, helpful assistant.
+
+${getCurrentDateTimeForPrompt('uk-UA')}
 
 LANGUAGE:
 - Always reply in the same language as the user's last message. Current language: ${replyLanguage}.
