@@ -3,6 +3,8 @@ import { nanoid } from 'nanoid';
 import { renameThreadAsync, deleteThread } from '@/features/slices/threadsSlice';
 import { ChatService } from '@/lib/ChatService';
 import { isDateOrTimeQuestion, formatDateTimeReply } from '@/utils/dateTime';
+import { parseUserPreferenceCommand } from '@/utils/textUtils';
+import { setUserGender, setUserDisplayName } from '@/features/slices/settingsSlice';
 
 const initialState = {
   messagesByThread: {},
@@ -30,12 +32,31 @@ export const sendMessage = createAsyncThunk(
       dispatch(addMessage({ text: userText, role: 'user', threadId }));
       await ChatService.addMessageToChat(threadId, { text: userText, role: 'user' });
 
-      // Локальна відповідь на питання про дату/час без звернення до AI
+      const pref = parseUserPreferenceCommand(userText);
+      if (pref) {
+        if (pref.type === 'gender') {
+          dispatch(setUserGender(pref.value));
+          const confirm = pref.value === 'feminine' ? 'Гаразд, звертатимусь у жіночому роді.'
+            : pref.value === 'masculine' ? 'Гаразд, звертатимусь у чоловічому роді.'
+            : 'Повертаю нейтральний стиль звертання.';
+          dispatch(addMessage({ text: confirm, role: 'bot', threadId }));
+          await ChatService.addMessageToChat(threadId, { text: confirm, role: 'bot' });
+          return;
+        }
+        if (pref.type === 'name') {
+          dispatch(setUserDisplayName(pref.value));
+          const confirm = `Гаразд, звертатимусь: ${pref.value}.`;
+          dispatch(addMessage({ text: confirm, role: 'bot', threadId }));
+          await ChatService.addMessageToChat(threadId, { text: confirm, role: 'bot' });
+          return;
+        }
+      }
+
       if (isDateOrTimeQuestion(userText)) {
         const responseText = formatDateTimeReply('uk-UA');
         dispatch(addMessage({ text: responseText, role: 'bot', threadId }));
         await ChatService.addMessageToChat(threadId, { text: responseText, role: 'bot' });
-        return; // зупиняємося, не звертаємось до моделі
+        return; 
       }
 
       const updatedMessages = getState().chat.messagesByThread[threadId];
@@ -44,7 +65,8 @@ export const sendMessage = createAsyncThunk(
         parts: [{ text: m.text }],
       }));
 
-      const response = await ChatService.getBotResponse(geminiMsgs);
+      const userPrefs = getState().settings;
+      const response = await ChatService.getBotResponse(geminiMsgs, userPrefs);
 
       dispatch(addMessage({ text: response, role: 'bot', threadId }));
       await ChatService.addMessageToChat(threadId, { text: response, role: 'bot' });

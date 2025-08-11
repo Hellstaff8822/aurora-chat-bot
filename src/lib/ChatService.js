@@ -18,7 +18,7 @@ const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 export const ChatService = {
-  async getBotResponse(messagesArr) {
+  async getBotResponse(messagesArr, userPrefs) {
     try {
       const lastUserMessageText = Array.isArray(messagesArr)
         ? [...messagesArr].reverse().find((m) => m?.role === 'user' && m?.parts?.[0]?.text)?.parts?.[0]?.text || ''
@@ -27,13 +27,21 @@ export const ChatService = {
       const hasLatin = /[A-Za-z]/.test(lastUserMessageText);
       const replyLanguage = hasLatin && !hasCyrillic ? 'English' : 'Ukrainian';
 
+      const displayName = userPrefs?.userDisplayName || '';
+      const userGender = userPrefs?.userGender || 'neutral';
+
       const systemPrompt = `You are Aurora, a modern, helpful assistant.
 
 ${getCurrentDateTimeForPrompt('uk-UA')}
 
+USER PREFERENCES:
+- User display name: ${displayName || 'not set'}
+- User preferred gender tone: ${userGender} (neutral | masculine | feminine)
+- If user asks to change your addressing style or their name, adapt accordingly and acknowledge.
+
 LANGUAGE:
 - Always reply in the same language as the user's last message. Current language: ${replyLanguage}.
-- Keep a gender‑neutral tone.
+- Keep a gender‑neutral tone by default unless user preference specifies otherwise.
 
 FORMATTING (Markdown):
 - Use headings: ## Title, ### Subtitle
