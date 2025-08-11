@@ -2,15 +2,14 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '@lib/firebase';
-import { setUser, clearUser } from '@features/authSlice';
+import { auth } from '@/lib/firebase';
+import { setUser, clearUser } from '@/features/slices/authSlice';
 import { fetchThreads } from '@/features/slices/threadsSlice';
-import { fetchMessagesForThread } from '@/features/slices/chatSlice';
-
 import { Chat, Login } from '@/pages';
 import { ProtectedRoute } from '@/components';
-import { useToast } from '@/hooks/useToast';
 import ToastContainer from '@/components/common/ToastContainer';
+import logoAurora from '@/assets/aurora128_enhanced.png';
+import { useToast } from '@/hooks/useToast';
 
 function App() {
   const dispatch = useDispatch();
@@ -28,11 +27,7 @@ function App() {
             photoURL: user.photoURL,
           }),
         );
-        const resultAction = await dispatch(fetchThreads(user.uid));
-        if (fetchThreads.fulfilled.match(resultAction) && resultAction.payload.length > 0) {
-          const firstThreadId = resultAction.payload[0].id;
-          dispatch(fetchMessagesForThread(firstThreadId));
-        }
+        await dispatch(fetchThreads(user.uid));
       } else {
         dispatch(clearUser());
       }
@@ -44,25 +39,14 @@ function App() {
   if (!isAuthChecked) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-[#1a2131] to-[#0f172a]">
-        <div className="text-center">
-          <h1 className="mb-8 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-purple-500 to-indigo-500 animate-pulse">
-            Aurora
-          </h1>
-
-          <div className="flex justify-center items-center space-x-2">
-            <span className="text-lg text-gray-300">Ініціалізація</span>
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-              <div
-                className="w-2 h-2 bg-purple-600 rounded-full animate-bounce"
-                style={{ animationDelay: '0.2s' }}
-              ></div>
-              <div
-                className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce"
-                style={{ animationDelay: '0.4s' }}
-              ></div>
-            </div>
-          </div>
+        <div className="flex flex-col items-center text-center">
+          <img
+            src={logoAurora}
+            alt="Aurora logo"
+            className="object-contain w-16 h-auto animate-spin md:w-20"
+            style={{ animationDuration: '1.2s' }}
+          />
+          <span className="mt-4 text-lg text-gray-300">Ініціалізація</span>
         </div>
       </div>
     );

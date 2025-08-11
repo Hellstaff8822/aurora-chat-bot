@@ -76,7 +76,7 @@ export function GoogleSignInButton() {
       onClick={handleGoogleSignIn}
       type="button"
       disabled={isLoading}
-      className="google-button flex items-center justify-center space-x-2 w-full p-3 bg-white text-gray-700 rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className="flex justify-center items-center p-3 space-x-2 w-full text-gray-700 bg-white rounded-lg border border-gray-300 transition-colors google-button hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {isLoading ? (
         <ClipLoader size={16} color="#6B7280" />
