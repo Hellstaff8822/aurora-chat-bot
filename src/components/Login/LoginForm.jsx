@@ -57,17 +57,24 @@ function LoginForm({ isLoginMode }) {
     }
   };
 
+  const validationSchema = isLoginMode
+    ? Yup.object({
+        email: Yup.string().email('Неправильний формат email').required("Це поле є обов'язковим"),
+        password: Yup.string().min(6, 'Пароль має бути не коротшим за 6 символів').required("Це поле є обов'язковим"),
+      })
+    : Yup.object({
+        nickname: Yup.string().min(3, 'Нікнейм має бути не коротшим за 3 символи').required("Це поле є обов'язковим"),
+        email: Yup.string().email('Неправильний формат email').required("Це поле є обов'язковим"),
+        password: Yup.string().min(6, 'Пароль має бути не коротшим за 6 символів').required("Це поле є обов'язковим"),
+      });
+
   const formik = useFormik({
     initialValues: {
-      nickname: isLoginMode ? '' : '',
+      nickname: '',
       email: '',
       password: '',
     },
-    validationSchema: Yup.object({
-      email: Yup.string().email('Неправильний формат email').required("Це поле є обов'язковим"),
-      password: Yup.string().min(6, 'Пароль має бути не коротшим за 6 символів').required("Це поле є обов'язковим"),
-      nickname: Yup.string().min(3, 'Нікнейм має бути не коротшим за 3 символи').required("Це поле є обов'язковим"),
-    }),
+    validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
       setSuccessMessage('');
@@ -114,19 +121,21 @@ function LoginForm({ isLoginMode }) {
 
   return (
     <form onSubmit={formik.handleSubmit} className="space-y-4">
-      <div>
-        <input
-          id="nickname"
-          name="nickname"
-          type="text"
-          placeholder="Нікнейм"
-          {...formik.getFieldProps('nickname')}
-          className="px-4 py-2 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {formik.touched.nickname && formik.errors.nickname ? (
-          <div className="mt-1 text-sm text-red-500">{formik.errors.nickname}</div>
-        ) : null}
-      </div>
+      {!isLoginMode && (
+        <div>
+          <input
+            id="nickname"
+            name="nickname"
+            type="text"
+            placeholder="Нікнейм"
+            {...formik.getFieldProps('nickname')}
+            className="px-4 py-2 w-full text-white rounded-md border bg-slate-800/50 border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {formik.touched.nickname && formik.errors.nickname ? (
+            <div className="mt-1 text-sm text-red-500">{formik.errors.nickname}</div>
+          ) : null}
+        </div>
+      )}
       <div>
         <input
           id="email"
